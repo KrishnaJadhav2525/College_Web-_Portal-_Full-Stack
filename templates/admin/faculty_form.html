@@ -1,0 +1,57 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}{{ 'Edit' if faculty else 'Add' }} Faculty{% endblock %}
+{% block page_title %}{{ 'Edit' if faculty else 'Add' }} Faculty Member{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-row">
+            <div class="form-field">
+                <label>Full Name *</label>
+                <input type="text" name="name" value="{{ faculty.name if faculty else '' }}" required>
+            </div>
+            <div class="form-field">
+                <label>Position/Role *</label>
+                <input type="text" name="role" value="{{ faculty.role if faculty else '' }}" required>
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-field">
+                <label>Qualification</label>
+                <input type="text" name="qualification" value="{{ faculty.qualification if faculty else '' }}">
+            </div>
+            <div class="form-field">
+                <label>Email</label>
+                <input type="email" name="email" value="{{ faculty.email if faculty else '' }}">
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-field">
+                <label>Photo</label>
+                <input type="file" name="photo" accept="image/*">
+                {% if faculty and faculty.photo %}
+                <small>Current: {{ faculty.photo }}</small>
+                {% endif %}
+            </div>
+            <div class="form-field">
+                <label>Resume (PDF)</label>
+                <input type="file" name="resume" accept=".pdf,.doc,.docx">
+                {% if faculty and faculty.resume %}
+                <small>Current: {{ faculty.resume }}</small>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-field">
+            <label>Display Order</label>
+            <input type="number" name="order" value="{{ faculty.order if faculty else 0 }}" min="0">
+        </div>
+        
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save</button>
+        <a href="{{ url_for('admin_faculty') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

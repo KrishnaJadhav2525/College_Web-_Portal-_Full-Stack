@@ -1,0 +1,58 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Manage Blogs{% endblock %}
+{% block page_title %}Blog Posts{% endblock %}
+
+{% block content %}
+<div class="filter-tabs">
+    <a href="{{ url_for('admin_blogs') }}?status=all" class="filter-tab {% if current_filter == 'all' %}active{% endif %}">All</a>
+    <a href="{{ url_for('admin_blogs') }}?status=pending" class="filter-tab {% if current_filter == 'pending' %}active{% endif %}">Pending</a>
+    <a href="{{ url_for('admin_blogs') }}?status=approved" class="filter-tab {% if current_filter == 'approved' %}active{% endif %}">Approved</a>
+    <a href="{{ url_for('admin_blogs') }}?status=rejected" class="filter-tab {% if current_filter == 'rejected' %}active{% endif %}">Rejected</a>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Student ID</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if blogs %}
+                {% for blog in blogs %}
+                <tr>
+                    <td><strong>{{ blog.title }}</strong></td>
+                    <td>{{ blog.author_name or 'Anonymous' }}</td>
+                    <td>{{ blog.student_id or '-' }}</td>
+                    <td>{{ blog.created_at.strftime('%d %b %Y') if blog.created_at else '-' }}</td>
+                    <td>
+                        <span class="badge badge-{{ blog.status }}">{{ blog.status|capitalize }}</span>
+                    </td>
+                    <td>
+                        {% if blog.status == 'pending' %}
+                        <form action="{{ url_for('approve_blog', blog_id=blog._id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></button>
+                        </form>
+                        <form action="{{ url_for('reject_blog', blog_id=blog._id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-warning btn-sm"><i class="fa-solid fa-times"></i></button>
+                        </form>
+                        {% endif %}
+                        <form action="{{ url_for('delete_blog', blog_id=blog._id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this blog?')">
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="6" class="text-muted" style="text-align:center;">No blog posts found</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

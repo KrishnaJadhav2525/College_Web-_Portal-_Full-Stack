@@ -1,0 +1,46 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}{{ 'Edit' if member else 'Add' }} CSA Member{% endblock %}
+{% block page_title %}{{ 'Edit' if member else 'Add' }} CSA Member{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <form method="POST">
+        <div class="form-row">
+            <div class="form-field">
+                <label>Full Name *</label>
+                <input type="text" name="name" value="{{ member.name if member else '' }}" required>
+            </div>
+            <div class="form-field">
+                <label>Position *</label>
+                <input type="text" name="position" value="{{ member.position if member else '' }}" required>
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-field">
+                <label>Year/Class</label>
+                <input type="text" name="year" value="{{ member.year if member else '' }}">
+            </div>
+            <div class="form-field">
+                <label>Contact (Email)</label>
+                <input type="text" name="contact" value="{{ member.contact if member else '' }}">
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-field">
+                <label>Display Order</label>
+                <input type="number" name="order" value="{{ member.order if member else 0 }}" min="0">
+            </div>
+            <div class="form-field">
+                <label>Current Member</label>
+                <input type="checkbox" name="is_current" {% if not member or member.is_current %}checked{% endif %}>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save</button>
+        <a href="{{ url_for('admin_csa_members') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

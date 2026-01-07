@@ -1,0 +1,50 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Add Research{% endblock %}
+{% block page_title %}Add Research Paper{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-field">
+            <label>Title *</label>
+            <input type="text" name="title" required>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-field">
+                <label>Author</label>
+                <input type="text" name="author">
+            </div>
+            <div class="form-field">
+                <label>Category</label>
+                <input type="text" name="category" placeholder="e.g., AI, IoT, Data Science">
+            </div>
+        </div>
+        
+        <div class="form-field">
+            <label>Description</label>
+            <textarea name="description" rows="4"></textarea>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-field">
+                <label>Date</label>
+                <input type="date" name="date">
+            </div>
+            <div class="form-field">
+                <label>PDF File</label>
+                <input type="file" name="pdf" accept=".pdf">
+            </div>
+        </div>
+        
+        <div class="form-field">
+            <label>Or PDF Link (URL)</label>
+            <input type="url" name="pdf_link" placeholder="https://example.com/paper.pdf">
+        </div>
+        
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save</button>
+        <a href="{{ url_for('admin_research') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+{% block title %}Gallery • Computer Science Department{% endblock %}
+
+{% block extra_css %}
+<style>
+  .gallery-section {
+    padding: 3rem 0;
+  }
+
+  .gallery-title {
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-size: 2.2rem;
+    color: var(--primary);
+  }
+
+  .gallery-subtitle {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+
+  .gallery-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Slider */
+  .slider-container {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto 2rem auto;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
+    background: #000;
+  }
+
+  .slider-track {
+    display: flex;
+    transition: transform 0.5s ease;
+  }
+
+  .slide {
+    min-width: 100%;
+  }
+
+  .slide img {
+    width: 100%;
+    height: 360px;
+    object-fit: cover;
+  }
+
+  .slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: rgba(15, 23, 42, 0.85);
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+  }
+
+  .slider-btn:hover {
+    background: var(--secondary);
+    color: var(--primary-dark);
+  }
+
+  .slider-btn.prev { left: 12px; }
+  .slider-btn.next { right: 12px; }
+
+  /* Cards under each slider */
+  .gallery-grid {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  @media (max-width: 1200px) {
+    .gallery-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 768px) {
+    .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .slide img { height: 240px; }
+  }
+
+  .gallery-card {
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px var(--shadow);
+    transition: transform 0.25s ease;
+    border-top: 4px solid var(--secondary);
+  }
+
+  .gallery-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .gallery-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+
+  .gallery-card-body {
+    padding: 0.9rem 1rem 1.1rem;
+    text-align: center;
+  }
+
+  .gallery-card h3 {
+    font-size: 0.98rem;
+    margin: 0.35rem 0 0.5rem;
+    color: var(--primary);
+  }
+
+  .gallery-card p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .category-badge {
+    display: inline-block;
+    padding: 0.15rem 0.7rem;
+    background: var(--primary);
+    color: var(--text-light);
+    border-radius: 999px;
+    font-size: 0.75rem;
+  }
+
+  .empty-text {
+    text-align: center;
+    color: var(--muted);
+    margin: 2rem 0 0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <h1>Gallery</h1>
+    <p>Explore memorable moments from events, industrial tours and department activities.</p>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- ========== EVENTS SECTION ========== -->
+  <section class="gallery-section">
+    <h2 class="gallery-title">Events</h2>
+    <p class="gallery-subtitle">
+      Highlights from seminars, expert talks, and CSA activities.
+    </p>
+
+    {% if events_slider or events_cards %}
+
+      {% if events_slider %}
+      <!-- Events slider -->
+      <div class="slider-container" id="eventsSliderContainer">
+        <div class="slider-track" id="eventsSliderTrack">
+          {% for item in events_slider %}
+          <div class="slide">
+            <img src="{{ item.image or '/placeholder.svg?height=360&width=900' }}"
+                 alt="{{ item.title or 'Event' }}">
+          </div>
+          {% endfor %}
+        </div>
+        <button class="slider-btn prev" data-slider="events">&#10094;</button>
+        <button class="slider-btn next" data-slider="events">&#10095;</button>
+      </div>
+      {% endif %}
+
+      {% if events_cards %}
+      <!-- Events cards -->
+      <div class="gallery-grid">
+        {% for item in events_cards %}
+        <div class="gallery-card">
+          <img src="{{ item.image or '/placeholder.svg?height=180&width=280' }}"
+               alt="{{ item.title or 'Event' }}">
+          <div class="gallery-card-body">
+            <!-- <span class="category-badge">Event</span> -->
+            <!-- <h3>{{ item.title or 'Event' }}</h3> -->
+            <h5>{{ item.description or '' }}</h5>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    {% else %}
+      <p class="empty-text">No event gallery images added yet.</p>
+    {% endif %}
+  </section>
+
+  <hr class="gallery-divider">
+
+  <!-- ========== INDUSTRIAL TOUR SECTION ========== -->
+  <section class="gallery-section">
+    <h2 class="gallery-title">Industrial Tour</h2>
+    <p class="gallery-subtitle">
+      Visits to industries and research centres.
+    </p>
+
+    {% if tour_slider or tour_cards %}
+
+      {% if tour_slider %}
+      <!-- Industrial slider -->
+      <div class="slider-container" id="tourSliderContainer">
+        <div class="slider-track" id="tourSliderTrack">
+          {% for item in tour_slider %}
+          <div class="slide">
+            <img src="{{ item.image or '/placeholder.svg?height=360&width=900' }}"
+                 alt="{{ item.title or 'Industrial Tour' }}">
+          </div>
+          {% endfor %}
+        </div>
+        <button class="slider-btn prev" data-slider="tour">&#10094;</button>
+        <button class="slider-btn next" data-slider="tour">&#10095;</button>
+      </div>
+      {% endif %}
+
+      {% if tour_cards %}
+      <!-- Industrial cards -->
+      <div class="gallery-grid">
+        {% for item in tour_cards %}
+        <div class="gallery-card">
+          <img src="{{ item.image or '/placeholder.svg?height=180&width=280' }}"
+               alt="{{ item.title or 'Industrial Tour' }}">
+          <div class="gallery-card-body">
+            <!-- <span class="category-badge">Industrial Tour</span>
+            <h3>{{ item.title or 'Industrial Tour' }}</h3> -->
+            <h5>{{ item.description or '' }}</h5>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    {% else %}
+      <p class="empty-text">No industrial tour images added yet.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function initSlider(prefix) {
+    const container = document.getElementById(prefix + 'SliderContainer');
+    const track = document.getElementById(prefix + 'SliderTrack');
+    if (!container || !track) return;
+
+    const slides = track.querySelectorAll('.slide');
+    if (!slides.length) return;
+
+    let index = 0;
+
+    function show(i) {
+      if (i < 0) i = slides.length - 1;
+      if (i >= slides.length) i = 0;
+      index = i;
+      track.style.transform = 'translateX(' + (-index * 100) + '%)';
+    }
+
+    const prevBtn = container.querySelector('.slider-btn.prev');
+    const nextBtn = container.querySelector('.slider-btn.next');
+
+    prevBtn.addEventListener('click', () => show(index - 1));
+    nextBtn.addEventListener('click', () => show(index + 1));
+
+    // auto slide
+    setInterval(() => show(index + 1), 5000);
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    initSlider('events');
+    initSlider('tour');
+  });
+</script>
+{% endblock %}

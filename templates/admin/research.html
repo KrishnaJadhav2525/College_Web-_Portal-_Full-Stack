@@ -1,0 +1,59 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Manage Research{% endblock %}
+{% block page_title %}Research Papers{% endblock %}
+
+{% block content %}
+<div class="mb-2">
+    <a href="{{ url_for('add_research') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Research</a>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>File</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if research_papers %}
+                {% for paper in research_papers %}
+                <tr>
+                    <td>{{ paper.title }}</td>
+                    <td>{{ paper.author }}</td>
+                    <td>{{ paper.category }}</td>
+                    <td>{{ paper.date if paper.date else '-' }}</td>
+                    <td>
+                        {% if paper.pdf_path or paper.pdf_link %}
+                            {% if paper.pdf_path %}
+                                <a href="{{ url_for('static', filename=paper.pdf_path.lstrip('/')) }}" class="btn btn-secondary btn-sm" target="_blank">
+                                    <i class="fa-solid fa-eye"></i> View
+                                </a>
+                            {% elif paper.pdf_link %}
+                                <a href="{{ paper.pdf_link }}" class="btn btn-secondary btn-sm" target="_blank">
+                                    <i class="fa-solid fa-eye"></i> View
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <span class="text-muted">No file</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form action="{{ url_for('admin_delete_research', research_id=paper._id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete?')">
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="6" class="text-muted" style="text-align:center;">No research papers</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

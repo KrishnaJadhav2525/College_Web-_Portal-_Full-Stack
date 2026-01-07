@@ -1,0 +1,176 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Manage CSA Members{% endblock %}
+{% block page_title %}CSA Members{% endblock %}
+
+{% block content %}
+
+<style>
+  /* Card container for the Past CSA section */
+  .admin-card {
+    margin-top: 2rem;
+    background: #ffffff;
+    padding: 1.5rem 1.75rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+  }
+
+  .admin-card h2 {
+    margin-bottom: 1.25rem;
+  }
+
+  .admin-card h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .admin-card .admin-form .form-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .admin-card .admin-form .form-field {
+    flex: 1;
+  }
+
+  .admin-card .admin-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+
+  .admin-card .admin-form input[type="text"],
+  .admin-card .admin-form input[type="file"] {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid #d4d4d8;
+    background: #f9fafb;
+  }
+
+  .admin-card .btn.primary {
+    margin-top: 0.5rem;
+  }
+</style>
+
+<div class="mb-2">
+    <a href="{{ url_for('add_csa_member') }}" class="btn btn-primary">
+        <i class="fa-solid fa-plus"></i> Add Member
+    </a>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Year</th>
+                <th>Contact</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if members %}
+                {% for member in members %}
+                <tr>
+                    <td><strong>{{ member.name }}</strong></td>
+                    <td>{{ member.position }}</td>
+                    <td>{{ member.year }}</td>
+                    <td>{{ member.contact or 'NA' }}</td>
+                    <td>
+                        <span class="badge {% if member.is_current %}badge-active{% else %}badge-inactive{% endif %}">
+                            {{ 'Current' if member.is_current else 'Past' }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('edit_csa_member', member_id=member.id) }}"
+                           class="btn btn-secondary btn-sm">
+                            <i class="fa-solid fa-edit"></i>
+                        </a>
+                        <form action="{{ url_for('delete_csa_member', member_id=member.id) }}"
+                              method="POST" style="display:inline;"
+                              onsubmit="return confirm('Delete?')">
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="6" class="text-muted" style="text-align:center;">No CSA members</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Past CSA Members PDFs -->
+<section class="admin-card">
+    <h2>Past CSA Members (PDF)</h2>
+
+    <form action="{{ url_for('admin_csa_past_add') }}" method="post"
+          enctype="multipart/form-data" class="admin-form">
+        <div class="form-row">
+            <div class="form-field">
+                <label>Year</label>
+                <input type="text" name="year" placeholder="2023-24" required>
+            </div>
+            <div class="form-field">
+                <label>Title (optional)</label>
+                <input type="text" name="title" placeholder="CSA Members 2023-24">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-field">
+                <label>PDF File</label>
+                <input type="file" name="pdf" accept="application/pdf" required>
+            </div>
+        </div>
+        <button type="submit" class="btn primary">Add Past CSA PDF</button>
+    </form>
+
+    <hr class="my-3">
+
+    <h3>Existing Past CSA Entries</h3>
+    {% if past_csa %}
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Title</th>
+                <th>PDF</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in past_csa %}
+            <tr>
+                <td>{{ item.year }}</td>
+                <td>{{ item.title }}</td>
+                <td>
+                    <a href="{{ url_for('static', filename=item.pdf_path) }}" target="_blank">
+                        View PDF
+                    </a>
+                </td>
+                <td>
+                    <form action="{{ url_for('admin_csa_past_delete', entry_id=item.id) }}"
+                          method="post" style="display:inline;">
+                        <button type="submit" class="btn small danger"
+                                onclick="return confirm('Delete this entry?');">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p class="text-muted">No past CSA PDFs added.</p>
+    {% endif %}
+</section>
+
+{% endblock %}

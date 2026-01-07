@@ -1,0 +1,80 @@
+{% extends "admin/base.html" %}
+{% block content %}
+
+<div class="admin-section">
+
+  <h3>Curriculum Management</h3>
+
+  <!-- Upload / Replace Form -->
+  <form class="curriculum-form"
+        method="POST" 
+        action="{{ url_for('upload_curriculum') }}"
+        enctype="multipart/form-data">
+
+    <select name="degree" required>
+      <option>B.Sc. F.Y.</option>
+      <option>B.Sc. S.Y.</option>
+      <option>B.Sc. T.Y.</option>
+      <option>B.Sc. DS F.Y.</option>
+      <option>B.Sc. DS S.Y.</option>
+      <option>B.Sc. DS T.Y.</option>
+      <option>M.Sc. C.S. F.Y.</option>
+      <option>M.Sc. C.S. S.Y.</option>
+      <option>B. Voc. F.Y.</option>
+      <option>B. Voc. S.Y.</option>
+      <option>B. Voc. T.Y.</option>
+    </select>
+
+    <select name="year" required>
+      <option>2024-25</option>
+      <option>2023-24</option>
+    </select>
+
+    <input type="file" name="pdf" required>
+
+    <button type="submit">Upload / Replace</button>
+  </form>
+
+  <!-- Curriculum Table -->
+  <div class="table-responsive">
+    <table class="curriculum-table">
+      <thead>
+        <tr>
+          <th>Degree</th>
+          <th>Year</th>
+          <th>PDF</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in records %}
+        <tr>
+          <td>{{ r.degree }}</td>
+          <td>{{ r.year }}</td>
+          <td>
+            <a href="{{ r.pdf_url }}" target="_blank" class="btn-view">
+              View
+            </a>
+          </td>
+          <td>
+            <a href="{{ url_for('delete_curriculum', degree=r.degree, year=r.year) }}"
+               onclick="return confirm('Delete this syllabus?')"
+               class="btn-delete">
+              Delete
+            </a>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="4" style="text-align:center; color:#64748b;">
+            No curriculum uploaded yet.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+{% endblock %}

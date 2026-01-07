@@ -1,0 +1,70 @@
+{% extends 'admin/base.html' %}
+{% block title %}Add Announcement{% endblock %}
+{% block page_title %}Add Announcement{% endblock %}
+
+{% block content %}
+<div class="card">
+  <form method="POST" enctype="multipart/form-data" class="admin-form">
+    <div class="form-row">
+      <div class="form-field">
+        <label>Title</label>
+        <input type="text" name="title" placeholder="Exam Timetable Released" required>
+      </div>
+      <div class="form-field">
+        <label>Display Date (optional)</label>
+        <input type="date" name="date">
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label>Message / Description</label>
+      <textarea name="message" rows="3"
+        placeholder="University exam timetable for Semester IV has been published."></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label>Category</label>
+        <select name="category">
+          <option value="general">General</option>
+          <option value="exam">Exam</option>
+          <option value="event">Event</option>
+          <option value="workshop">Workshop</option>
+          <option value="notice">Notice</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Show In</label>
+        <select name="board">
+          <option value="both">Both (Top bar & Board)</option>
+          <option value="ticker">Top Scrolling Bar only</option>
+          <option value="board">Main Notice Board only</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label>Attachment (optional)</label>
+        <input type="file" name="file" accept=".pdf,image/*">
+        <small class="text-muted">Upload PDF / image to open when clicked.</small>
+      </div>
+      <div class="form-field">
+        <label>Or external link (optional)</label>
+        <input type="url" name="link_url" placeholder="https://...">
+        <small class="text-muted">If both file and link are given, the link will be opened.</small>
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label>
+        <input type="checkbox" name="is_active" checked>
+        Active (visible on website)
+      </label>
+    </div>
+
+    <button type="submit" class="btn primary">Save Announcement</button>
+    <a href="{{ url_for('admin_notifications') }}" class="btn ghost">Cancel</a>
+  </form>
+</div>
+{% endblock %}

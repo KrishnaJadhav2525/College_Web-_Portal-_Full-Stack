@@ -1,0 +1,445 @@
+{
+  "students": [
+    {
+      "id": "ec3e2cd1-01c2-427c-90e5-eca0598dcc49",
+      "name": "Vivek kavdale",
+      "student_id": "2310180",
+      "email": "kavdalesanket@gmail.com",
+      "password_hash": "pbkdf2:sha256:260000$zZsCXaf9rqlektms$5e157e6761c75444badfdf4b9c070e7e8e5fd8c0f2d13050ac53088267719843",
+      "is_active": true,
+      "created_at": "2025-12-07T13:28:34.587460"
+    }
+  ],
+  "blogs": [
+    {
+      "id": "af784687-e1e0-4ee5-aa42-283594831507",
+      "title": "IT Sector Latest News",
+      "content": "hsdg",
+      "author_name": "Shaikh Rajjak",
+      "author_type": "student",
+      "student_id": "2310180",
+      "author_email": "shaikhrajjak126@gmail.com",
+      "file_link": null,
+      "file_path": "/uploads/f32ca89e-ae9d-46b6-8f3f-7984a3ab3213-Screenshot_2024-09-04_230958.png",
+      "file_type": "image",
+      "status": "approved",
+      "approved": true,
+      "likes": [
+        "student:2310180"
+      ],
+      "comments": [
+        {
+          "id": "baad478d-8f7a-4506-9ee8-8ac2ac1fc7cd",
+          "author_name": "Shaikh Rajjak",
+          "author_type": "student",
+          "text": "nice",
+          "created_at": "2025-12-07T07:21:53.805153"
+        }
+      ],
+      "created_at": "2025-12-07T07:20:32.500121",
+      "approved_at": "2025-12-07T07:20:57.605058"
+    },
+    {
+      "id": "e5629bfd-3d38-419b-b2b4-b3e9f8ad3cd9",
+      "title": "CSA Inaugration",
+      "content": "hduewf",
+      "author_name": "R Londhe",
+      "author_type": "faculty",
+      "student_id": null,
+      "author_email": "rlondhe@gmail.com",
+      "file_link": null,
+      "file_path": "/uploads/017dcee9-074f-4e87-bec3-9268ff786a97-2021-22cs.pdf",
+      "file_type": "pdf",
+      "status": "approved",
+      "approved": true,
+      "likes": [
+        "faculty:rlondhe@gmail.com"
+      ],
+      "comments": [],
+      "created_at": "2025-12-07T07:23:23.906994",
+      "approved_at": "2025-12-07T07:23:36.682760"
+    }
+  ],
+  "contacts": [
+    {
+      "id": "cab717b2-c03c-42a3-af3c-020d3904fde7",
+      "name": "vivek",
+      "email": "kavdalesanket@gmail.com",
+      "subject": "just checking",
+      "message": "ergivm99gt5ijmhby896jgmij54gvj85bjgndtbndrdv jnndb mcncfbjf cvcbngfjn nbc bv",
+      "read": true,
+      "created_at": "2025-12-07T13:34:11.764861"
+    }
+  ],
+  "faculty": [
+    {
+      "id": "e9ac3013-49cf-4cd3-b839-fd854d96860b",
+      "name": "Dr. Londhe Renuka Ramakant",
+      "role": "Head of Department & Assistant Professor",
+      "qualification": "M.C.S.,M.Phil.(CS),Ph. D.(CS)",
+      "email": "",
+      "phone": "",
+      "specialization": "",
+      "experience": "",
+      "photo": "/uploads/47e06672-db0a-4008-8d78-01da0b08ad3f-HOD.jpg",
+      "resume": "/uploads/78a965a1-a384-492e-9292-3c26f26a9476-HOD.pdf",
+      "order": 1
+    },
+    {
+      "id": "4653a3dd-1e1c-473c-931c-b954d0641bae",
+      "name": "Ms. Suchitra Sonwane (Kasbe)",
+      "role": "Assistant Professor",
+      "qualification": "M.Sc.(CA), B.Ed.",
+      "email": "",
+      "phone": "",
+      "specialization": "",
+      "experience": "",
+      "photo": "/uploads/b3c4ff01-fa82-4fc3-aa3d-ac4f59e5cc7a-suchitra_kasbe.jpg",
+      "resume": "/uploads/1621f038-96cf-43c6-af64-1d1a6ab3d344-S.K.Kasbe_CV.pdf",
+      "order": 2
+    },
+    {
+      "id": "854b44cf-7d66-4c5b-a613-f680a89eb560",
+      "name": "Ms. Pooja Santosh Laturiya",
+      "role": "Assistant Professor",
+      "qualification": "M.Tech.(Pursuing), B.E.(CSE)",
+      "email": "",
+      "phone": "",
+      "specialization": "",
+      "experience": "",
+      "photo": "/uploads/fccd1e3a-ad56-44c4-b250-c30103cc338b-Pooja.jpg.jpg",
+      "resume": "/uploads/3beabf48-8e4f-4757-9da2-43b8579e4ab0-Pooja.pdf",
+      "order": 3
+    },
+    {
+      "id": "8a319e3a-42e6-4b42-975e-0c4359b86c93",
+      "name": "Mr. Arun Sheshrao Shinde",
+      "role": "Assistant Professor",
+      "qualification": "M.Sc. Soft. Engg, B.Sc",
+      "email": "",
+      "phone": "",
+      "specialization": "",
+      "experience": "",
+      "photo": "/uploads/768b6d99-03ce-4fc5-901d-28445e906131-Arun_Shinde.jpg",
+      "resume": "/uploads/b751b833-4cd2-4af6-be8a-e1797dc43c8f-CV_Arun_Shinde.pdf",
+      "order": 4
+    },
+    {
+      "id": "19914aa1-71a1-4c18-9420-2ed3a83b081a",
+      "name": "Ms. Sunita Mahadeo Jadhav",
+      "role": "Assistant Professor",
+      "qualification": "M.Tech(CSE) ,B.E.(CSE)",
+      "email": "",
+      "phone": "",
+      "specialization": "",
+      "experience": "",
+      "photo": "/uploads/e685b608-bf1f-4fe1-9c8f-d1a44b6e1d9f-Sunita_Jadhav.png",
+      "resume": "/uploads/4b08ca63-60ea-42fe-8991-70daca649a5d-Sunita.pdf",
+      "order": 5
+    },
+    {
+      "id": "2a9eec0e-f847-444f-abf7-59bf0d63be40",
+      "name": "Ms. Humera Parveen Farooqmiya Maniyar",
+      "role": "Assistant Professor",
+      "qualification": "M.Sc.(CS), B.Sc.(CS)",
+      "email": "",
+      "phone": "",
+      "specialization": "",
+      "experience": "",
+      "photo": "/uploads/0da4d6fc-cfa9-441e-b6b5-cf7bd275195c-Humera.jpg",
+      "resume": "/uploads/b9d2abe6-5481-4f52-8d05-b599960669a9-Humera.pdf",
+      "order": 6
+    },
+    {
+      "id": "59df4fe6-fbb0-4c5d-a422-60b3d3b28730",
+      "name": "Ms. Swati Madhukar Sandur",
+      "role": "Assistant Professor",
+      "qualification": "MSC.CS",
+      "email": "",
+      "phone": "",
+      "specialization": "",
+      "experience": "",
+      "photo": "/uploads/baa97041-374e-402b-ad31-5cf976bc2af9-Photo_SMS.jpg",
+      "resume": "/uploads/880dec5b-2576-4cce-89f0-edfe6ab39944-Resume_SMS.pdf",
+      "order": 7
+    },
+    {
+      "id": "adb140c9-9d6b-454b-9b4b-f9d61036a59a",
+      "name": "Mr.Mahesh Sanjay Katambe",
+      "role": "Assistant Professor",
+      "qualification": "M.Sc.Computer Science",
+      "email": "",
+      "phone": "",
+      "specialization": "",
+      "experience": "",
+      "photo": "/uploads/b3f1306e-6d3e-477a-9a6f-5d99b7469f22-mahesh_photo.jpg",
+      "resume": "/uploads/b7e9caac-919d-43c9-a6cf-b44741c0c4c5-Mahesh.pdf",
+      "order": 8
+    },
+    {
+      "id": "efd381ba-2113-4336-aca0-79b07333d0e8",
+      "name": "Dr. Londhe Renuka Ramakant",
+      "email": "rlondhe@gmail.com",
+      "designation": "Head of Department & Assistant Professor",
+      "password_hash": "pbkdf2:sha256:260000$XEH8UWzcCqVfA1jb$52caf7bf347f4abb2df05e2cfa8eac9672960be2708260dec0b573214696a160",
+      "is_active": true,
+      "created_at": "2025-12-09T07:23:04.128952"
+    },
+    {
+      "id": "7b5b905b-49d9-48b2-a4a4-32e83a820617",
+      "name": "Dr. Londhe Renuka Ramakant",
+      "email": "renukalondhe@gmail.com",
+      "designation": "Head of Department & Assistant Professor",
+      "password_hash": "pbkdf2:sha256:260000$0DmQY6rIojz6y8U1$c168a53bc13b07d6fe7d26aafa91b09870d0520b74f599b2fd475a5bbfcbc8f1",
+      "is_active": true,
+      "created_at": "2025-12-09T07:34:13.431374"
+    }
+  ],
+  "events": [
+    {
+      "id": "83857918-cc81-458b-9a67-799b175ec64d",
+      "title": "Inaugration of \"TechnoMinds\" Computer Science Association",
+      "date": "2025-08-16T11:00",
+      "location": "VLC Hall",
+      "description": "Kick-off for the academic year with dignitaries.",
+      "image": "/uploads/0f4f4d0d-3f77-45be-9b65-c5f457eb9eaf-banner1.jpeg",
+      "order": 0
+    },
+    {
+      "id": "3ac98922-e3c4-4e13-ae59-3767544c60d0",
+      "title": "Guest Lecture",
+      "date": "2025-08-16T12:30",
+      "location": "VLC Hall",
+      "description": "Hands-on session of AI in our everyday life.",
+      "image": null,
+      "order": 0
+    },
+    {
+      "id": "a05d53bf-a41f-4441-9b64-2a1b6094d005",
+      "title": "Freshers Part-2k25",
+      "date": "2025-08-29T14:16",
+      "location": "VLC Hall",
+      "description": "Freshers Party for all UG & PG First Year Students.",
+      "image": null,
+      "order": 0
+    },
+    {
+      "id": "8d2abfab-9afe-4f80-9af1-0bad983d7fd1",
+      "title": "Genz innovator carnival",
+      "date": "2026-01-07T19:07",
+      "location": "RSM , Latur",
+      "description": "new program",
+      "image": null,
+      "order": 0
+    }
+  ],
+  "notifications": [
+    {
+      "id": "6ff48fc5-ba78-454d-8ad0-6459ca28ba40",
+      "message": "new hackton genz innovater carnival",
+      "date": "2026-01-05",
+      "is_active": true,
+      "created_at": "2025-12-07T13:26:19.148239"
+    }
+  ],
+  "gallery": [],
+  "research": [
+    {
+      "id": "0144974e-ad45-49d7-954f-1eb5edbeb92a",
+      "title": "Air Quality Monitoring System",
+      "author": "Dr.Renuka Londhe",
+      "category": "IOT And WSN(Wireless Sensor Networks)",
+      "description": "This project aims to provide real-time pollution data, enabling preventive measures against harmful emissions from vehicles and other sources.",
+      "date": "2024-04-07T00:00:00",
+      "pdf_path": "/uploads/55f0ccf3-a766-4d79-a798-a598fad8019f-HOD2.pdf",
+      "pdf_link": ""
+    }
+  ],
+  "csa_members": [
+    {
+      "id": "5f8c541a-3220-4430-8edd-de17e493ff90",
+      "name": "Mansi Birajdar",
+      "position": "President",
+      "year": "B.Voc TY",
+      "contact": "mansimanoj2005@gmail.com",
+      "order": 1,
+      "is_current": true
+    },
+    {
+      "id": "2055e64c-4696-4f36-a9f9-8340f0b57e9e",
+      "name": "Gayatri Bandgar",
+      "position": "Vice Prisedent",
+      "year": "BSc TY",
+      "contact": "bandgargayatri09@gmail.com",
+      "order": 2,
+      "is_current": true
+    },
+    {
+      "id": "a064dc87-841d-4940-9c9e-7ea21d5789ed",
+      "name": "Vivek Kavdale",
+      "position": "Secretary",
+      "year": "B.Voc TY",
+      "contact": "vivek1412@gmail.com",
+      "order": 3,
+      "is_current": true
+    },
+    {
+      "id": "53ca7dd2-b27e-4f7d-b90b-f9795306e224",
+      "name": "Priyanka Shinde",
+      "position": "Joint Secretary",
+      "year": "B.Voc TY",
+      "contact": "priyankashinde9834@gmail.com",
+      "order": 4,
+      "is_current": true
+    },
+    {
+      "id": "9dc22354-e1b0-4563-892e-86ea2864b41a",
+      "name": "Siddhi Shinde",
+      "position": "Joint Secretary",
+      "year": "BSc SY",
+      "contact": "Siddhishshinde1711@gmail.com",
+      "order": 5,
+      "is_current": true
+    },
+    {
+      "id": "3db8dd4b-8699-4ad9-82b3-f88d33b4c18f",
+      "name": "Vaishnavi Farkande",
+      "position": "Treasurer",
+      "year": "BSc SY",
+      "contact": "farkandevaishnavi16@gmail.com",
+      "order": 6,
+      "is_current": true
+    },
+    {
+      "id": "cd6037db-d47a-4256-a3ff-a8d6caca29d1",
+      "name": "Pooja Pandge",
+      "position": "Joiont Treasurer",
+      "year": "MSc Cs SY",
+      "contact": "poojapandge123@gmail.com",
+      "order": 7,
+      "is_current": true
+    },
+    {
+      "id": "eae9dd5b-be73-4422-b7a1-b09127ac3a01",
+      "name": "Aljahidi Zahed Husain",
+      "position": "Joiont Treasurer",
+      "year": "MSc Cs FY",
+      "contact": "NA",
+      "order": 8,
+      "is_current": true
+    },
+    {
+      "id": "7c145473-dba1-4124-bf2f-81c026532f68",
+      "name": "Rajjak Shaikh",
+      "position": "Technical Lead",
+      "year": "BSc TY",
+      "contact": "shaikhrajjak126@gmail.com",
+      "order": 9,
+      "is_current": true
+    },
+    {
+      "id": "7336b821-4e37-46f8-96bb-59f8109d2950",
+      "name": "Shradha Mahanure",
+      "position": "Technical Lead",
+      "year": "B.Voc TY",
+      "contact": "shradhamahanure038@gmail.com",
+      "order": 10,
+      "is_current": true
+    },
+    {
+      "id": "c661f6c0-6b64-49c0-89f1-db428afafb95",
+      "name": "Omkar Survase",
+      "position": "Event Manager",
+      "year": "MSc Cs SY",
+      "contact": "omkarsurwase0509@gmail.com",
+      "order": 11,
+      "is_current": true
+    },
+    {
+      "id": "9f113847-c3ca-43a6-b184-b088c2ba8064",
+      "name": "Mayuri Majre",
+      "position": "Event Manager",
+      "year": "MSc Cs SY",
+      "contact": "majremayuri@gmail.com",
+      "order": 12,
+      "is_current": true
+    },
+    {
+      "id": "c64f42e6-39a1-4d80-867f-fc89ed13aa98",
+      "name": "Sakshi Chotwe",
+      "position": "Event Manager",
+      "year": "MSc Cs FY",
+      "contact": "NA",
+      "order": 13,
+      "is_current": true
+    },
+    {
+      "id": "34bdb5e2-1332-4742-8ffb-e008cec56e39",
+      "name": "Sneha Muske",
+      "position": "Member",
+      "year": "B.Sc Ds FY",
+      "contact": "snehalreddy@gmail.com",
+      "order": 14,
+      "is_current": true
+    },
+    {
+      "id": "2d6c49f4-d928-4579-b4d1-e9b0de41f022",
+      "name": "Komal Narwade",
+      "position": "Member",
+      "year": "B.Sc Ds FY",
+      "contact": "NA",
+      "order": 15,
+      "is_current": true
+    },
+    {
+      "id": "e9f9d7f4-4df5-4e2d-b226-5c0d42022abc",
+      "name": "Sarthak Vedpathak",
+      "position": "Member",
+      "year": "B.Sc Ds FY",
+      "contact": "sarthakvedpathak99@gmail.com",
+      "order": 16,
+      "is_current": true
+    },
+    {
+      "id": "7b7f2a2d-8683-45b1-8d0b-5f12f27a7beb",
+      "name": "Kapil Dhage",
+      "position": "Member",
+      "year": "B.Sc Ds FY",
+      "contact": "kadhage0198@gmail.com",
+      "order": 17,
+      "is_current": true
+    },
+    {
+      "id": "6bfa9fcf-5947-44da-a2a7-672e37fca15b",
+      "name": "Amarnath Kakde",
+      "position": "Member",
+      "year": "B.Sc Ds FY",
+      "contact": "amarnathkakade55@gmail.com",
+      "order": 18,
+      "is_current": true
+    }
+  ],
+  "past_csa": [
+    {
+      "id": "8883ca5c-2d58-467f-a63c-adb3af5f8a54",
+      "year": "2021-22",
+      "title": "CSA Members 2021-22",
+      "pdf_path": "uploads/past_csa/3a04c827bb2a45be815b10dfefacb449_2021-22cs.pdf",
+      "created_at": "2025-12-07T16:33:50.524948"
+    },
+    {
+      "id": "0c3cf1e2-de27-48e6-8587-e03ad5b2a3cf",
+      "year": "2022-23",
+      "title": "CSA Members 2022-23",
+      "pdf_path": "uploads/past_csa/36d4b866ec0440929592b887f0cee4d9_2022-23cs.pdf",
+      "created_at": "2025-12-07T16:34:05.790185"
+    },
+    {
+      "id": "2666cf39-c53b-4679-b7f2-660962a0c941",
+      "year": "2023-24",
+      "title": "CSA Members 2023-24",
+      "pdf_path": "uploads/past_csa/21311c6f95c84f71851c2b6688613326_2023-24cs.pdf",
+      "created_at": "2025-12-07T16:34:22.160928"
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+{% extends 'base.html' %} {% block title %}CSA • Computer Science Association{%
+endblock %} {% block extra_css %}
+<style>
+  /* Removed different hero color - now uses unified theme from base */
+  .csa-hero p {
+    color: var(--text-light);
+    max-width: 900px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  .csa-section {
+    padding: 3rem 0;
+  }
+
+  .objectives-list {
+    background: var(--card);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--shadow);
+    border-top: 4px solid var(--secondary);
+  }
+
+  .objectives-list h2 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+  }
+
+  .objectives-list ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .objectives-list li {
+    padding: 0.75rem 0;
+    padding-left: 2rem;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .objectives-list li:last-child {
+    border-bottom: none;
+  }
+
+  .objectives-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--secondary);
+    font-weight: bold;
+  }
+
+  .members-section {
+    margin-top: 2rem;
+  }
+
+  .members-section h2 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+  }
+  .members-section th,td{
+    border: 1px solid black;
+  }
+
+  .past-csa-section {
+    margin-top: 3rem;
+    text-align: center;
+  }
+  .past-csa-table-wrapper {
+    max-width: 900px;
+    margin: 1.5rem auto;
+  }
+  .past-csa-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  }
+  .past-csa-table th,
+  .past-csa-table td {
+    padding: 1.5rem;
+    border: 1px solid black;
+  }
+  .past-csa-table th {
+    background: var(--primary);
+    font-weight: 700;
+  }
+  .past-csa-table td {
+    background: #ffffff;
+  }
+  .pdf-link {
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .pdf-link:hover {
+    text-decoration: underline;
+  }
+</style>
+{% endblock %} {% block content %}
+<section class="page-hero csa-hero">
+  <div class="container">
+    <h1>TechnoMinds - Computer Science Association (CSA)</h1>
+        TechnoMinds is the official Computer Science Association of our college,
+        dedicated to fostering innovation, collaboration, and skill development
+        among students.It serves as a dynamic platform that bridges the gap between theoretical
+        learning and practical application through workshops, seminars, coding
+        competitions, and expert talks.Mission is to empower students with industry-relevant skills in
+        programming, problem-solving, communication, and emerging technologies
+        like AI, Data Science, IoT, and Cloud Computing.TechnoMinds also facilitates mentorship, career guidance, and access to
+        online learning resources such as NPTEL and Spoken Tutorial IIT Bombay.By organizing leadership-building events and networking opportunities
+        with alumni and professionals, TechnoMinds ensures that every member is
+        equipped to thrive in the ever-evolving tech landscape.
+  </div>
+</section>
+
+<section class="csa-section container">
+  <div class="objectives-list">
+    <h2>Objectives & Activities</h2>
+    <ul>
+      <li>
+        Promote academic excellence through workshops, seminars and guest
+        lectures
+      </li>
+      <li>
+        Organize events that enhance leadership, communication and teamwork
+        skills
+      </li>
+      <li>
+        Conduct competitions and recreational events for overall department
+        development
+      </li>
+      <li>
+        Build relationships with alumni, industry experts and other institutions
+      </li>
+      <li>Provide a platform to express ideas, talents and concerns</li>
+      <li>Arrange placement awareness sessions for career orientation</li>
+      <li>
+        Keep students updated with emerging technologies like AI, Data Science,
+        IoT, Cloud Computing
+      </li>
+      <li>
+        Encourage students through comprehensive training in technical, aptitude
+        and soft skills
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="members-section container">
+  <h2>Current CSA Members</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Position</th>
+          <th>Year</th>
+          <th>Contact</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if current_members %} {% for member in current_members %}
+        <tr>
+          <td>{{ member.name }}</td>
+          <td>{{ member.position }}</td>
+          <td>{{ member.year }}</td>
+          <td>{{ member.contact or 'NA' }}</td>
+        </tr>
+        {% endfor %} {% else %}
+        <tr>
+          <td colspan="4" class="text-center">No members data available</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</section>
+<!-- Past CSA Members (PDFs per year) -->
+<section class="container past-csa-section">
+  <h2 class="section-title">Past CSA Members</h2>
+
+  {% if past_csa %}
+  <div class="past-csa-table-wrapper">
+    <table class="past-csa-table">
+      <tr>
+        {% for item in past_csa %}
+        <th>{{ item.year }}</th>
+        {% endfor %}
+      </tr>
+      <tr>
+        {% for item in past_csa %}
+        <td>
+          <a
+            href="{{ url_for('static', filename=item.pdf_path) }}"
+            target="_blank"
+            class="pdf-link"
+          >
+            📄 View PDF
+          </a>
+        </td>
+        {% endfor %}
+      </tr>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-muted">No past CSA members PDFs added yet.</p>
+  {% endif %}
+</section>
+
+
+{% endblock %}

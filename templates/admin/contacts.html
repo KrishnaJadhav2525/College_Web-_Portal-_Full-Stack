@@ -1,0 +1,52 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Contact Messages{% endblock %}
+{% block page_title %}Contact Messages{% endblock %}
+
+{% block content %}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Subject</th>
+                <th>Message</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if contacts %}
+                {% for contact in contacts %}
+                <tr>
+                    <td><strong>{{ contact.name }}</strong></td>
+                    <td><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></td>
+                    <td>{{ contact.subject }}</td>
+                    <td>{{ contact.message[:50] }}{% if contact.message|length > 50 %}...{% endif %}</td>
+                    <td>{{ contact.created_at.strftime('%d %b %Y') if contact.created_at else '-' }}</td>
+                    <td>
+                        <span class="badge {% if contact.is_read %}badge-active{% else %}badge-pending{% endif %}">
+                            {{ 'Read' if contact.is_read else 'Unread' }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if not contact.is_read %}
+                        <form action="{{ url_for('mark_contact_read', contact_id=contact._id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-success btn-sm"><i class="fa-solid fa-check"></i></button>
+                        </form>
+                        {% endif %}
+                        <form action="{{ url_for('delete_contact', contact_id=contact._id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this message?')">
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="7" class="text-muted" style="text-align:center;">No contact messages</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

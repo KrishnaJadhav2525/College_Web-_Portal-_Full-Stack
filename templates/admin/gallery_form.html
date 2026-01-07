@@ -1,0 +1,51 @@
+{% extends 'admin/base.html' %} {% block title %}Add Gallery Item{% endblock %}
+{% block page_title %}Add Gallery Item{% endblock %} {% block content %}
+<div class="form-card">
+  <form method="POST" enctype="multipart/form-data">
+    <div class="form-field">
+      <label>Title</label>
+      <input type="text" name="title" />
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label>Category (select section where this image will appear)</label>
+        <select name="category" required>
+          <!-- HOME sections -->
+          <option value="department_gallery">Home – Department Gallery</option>
+
+          <!-- ABOUT page -->
+          <option value="infrastructure">Infrastructure (About Us)</option>
+
+          <!-- EVENTS PAGE ONLY -->
+          <option value="events">Events Page Slider (Events page only)</option>
+
+          <!-- GALLERY PAGE – EVENTS SECTION -->
+          <option value="events_gallery_slider">Gallery – Events Slider</option>
+          <option value="events_gallery_cards">Gallery – Events Cards</option>
+
+          <!-- GALLERY PAGE – INDUSTRIAL TOUR SECTION (keep as you had) -->
+          <option value="industrial_slider">Industrial Tour – Slider</option>
+          <option value="industrial_cards">Industrial Tour – Cards</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Image *</label>
+        <input type="file" name="image" accept="image/*" required />
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label>Description</label>
+      <textarea name="description" rows="3"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+      <i class="fa-solid fa-save"></i> Save
+    </button>
+    <a href="{{ url_for('admin_gallery') }}" class="btn btn-secondary"
+      >Cancel</a
+    >
+  </form>
+</div>
+{% endblock %}

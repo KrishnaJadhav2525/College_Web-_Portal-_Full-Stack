@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block title %}Research • Computer Science Department{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Removed different hero color - now uses unified theme from base */
+    .research-section {
+        padding: 3rem 0;
+    }
+    
+    .search-bar {
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        position: relative;
+    }
+    
+    .search-bar input {
+        width: 100%;
+        padding: 1rem 3rem 1rem 1.5rem;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+    
+    .search-bar input:focus {
+        border-color: var(--primary);
+        outline: none;
+    }
+    
+    .search-bar i {
+        position: absolute;
+        right: 1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--secondary);
+    }
+    
+    .research-section h2 {
+        color: var(--primary);
+    }
+    
+    .research-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .research-card {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px var(--shadow);
+        transition: transform 0.3s ease;
+        border-left: 4px solid var(--secondary);
+    }
+    
+    .research-card:hover { transform: translateY(-5px); }
+    
+    .research-tag {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: var(--primary);
+        color: var(--text-light);
+        border-radius: 4px;
+        font-size: 0.8rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .research-card h3 {
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+    
+    .research-meta {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin-top: 1rem;
+    }
+    
+    .research-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        color: var(--primary);
+        font-weight: 600;
+    }
+    
+    .research-link:hover { color: var(--secondary); }
+    
+    .research-link i {
+        color: var(--secondary);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <h1>Research at Computer Science Department</h1>
+        <p>Explore our faculty's groundbreaking work in AI, Data Science, IoT, and beyond.</p>
+    </div>
+</section>
+
+<section class="research-section container">
+    <div class="search-bar">
+        <input type="text" id="researchSearch" placeholder="Search for papers, keywords, or authors...">
+        <i class="fa-solid fa-magnifying-glass"></i>
+    </div>
+    
+    <h2 class="mb-2">Featured Research</h2>
+    <div class="research-grid" id="researchGrid">
+        {% if research_papers %}
+            {% for paper in research_papers %}
+            <div class="research-card">
+                {% if paper.category %}
+                <span class="research-tag">{{ paper.category }}</span>
+                {% endif %}
+                <h3>{{ paper.title }}</h3>
+                <p>{{ paper.abstract or paper.description or '' }}</p>
+                <div class="research-meta">
+                    <span>Author: {{ paper.authors or paper.author or 'Unknown' }}</span>
+                    <span>{{ paper.date.strftime('%B %Y') if paper.date else '' }}</span>
+                </div>
+                {% if paper.file or paper.link or paper.pdf_link %}
+                <a href="{{ paper.file or paper.link or paper.pdf_link }}" target="_blank" class="research-link">
+                    <i class="fa-solid fa-file-pdf"></i> Read More
+                </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="research-card">
+                <span class="research-tag">IoT & WSN</span>
+                <h3>Air Quality Monitoring System</h3>
+                <p>This project aims to provide real-time pollution data, enabling preventive measures against harmful emissions from vehicles and other sources.</p>
+                <div class="research-meta">
+                    <span>Author: Dr. Renuka Londhe</span>
+                    <span>April 2024</span>
+                </div>
+                <a href="#" class="research-link">
+                    <i class="fa-solid fa-file-pdf"></i> Read More
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('researchSearch')?.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        document.querySelectorAll('.research-card').forEach(card => {
+            const text = card.textContent.toLowerCase();
+            card.style.display = text.includes(term) ? 'block' : 'none';
+        });
+    });
+</script>
+{% endblock %}

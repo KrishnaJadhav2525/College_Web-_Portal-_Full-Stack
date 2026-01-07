@@ -1,0 +1,91 @@
+{% extends 'admin/base.html' %}
+{% block title %}Announcements{% endblock %}
+{% block page_title %}Announcements{% endblock %}
+
+{% block content %}
+<div class="mb-2">
+  <a href="{{ url_for('add_notification') }}" class="btn btn-primary">
+    <i class="fa-solid fa-plus"></i> Add Announcement
+  </a>
+</div>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Title & Message</th>
+        <th>Category</th>
+        <th>Board</th>
+        <th>Active</th>
+        <th>Date</th>
+        <th>Link / File</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if notifications %}
+        {% for n in notifications %}
+        <tr>
+          <td>
+            <strong>{{ n.title or (n.message[:50] ~ '...') }}</strong>
+            {% if n.message %}
+              <div class="text-muted" style="font-size:0.85rem;">
+                {{ n.message[:80] }}{% if n.message|length > 80 %}...{% endif %}
+              </div>
+            {% endif %}
+          </td>
+          <td>{{ n.category or 'general' }}</td>
+          <td>{{ n.board or 'both' }}</td>
+          <td>
+            {% if n.is_active %}
+              <span class="badge badge-active">Active</span>
+            {% else %}
+              <span class="badge badge-inactive">Hidden</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if n.date %}
+              {{ n.date.strftime('%d %b %Y') if n.date else '' }}
+            {% elif n.created_at %}
+              {{ n.created_at[:10] }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>
+            {% if n.link_url %}
+              <a href="{{ n.link_url }}" target="_blank">Open link</a>
+            {% elif n.file_path %}
+              <a href="{{ n.file_path }}" target="_blank">Open file</a>
+            {% else %}
+              <span class="text-muted">None</span>
+            {% endif %}
+          </td>
+          <td>
+            <form action="{{ url_for('toggle_notification', notif_id=n.id) }}"
+                  method="post" style="display:inline;">
+              <button type="submit" class="btn btn-secondary btn-sm">
+                {% if n.is_active %}Hide{% else %}Show{% endif %}
+              </button>
+            </form>
+            <form action="{{ url_for('delete_notification', notif_id=n.id) }}"
+                  method="post" style="display:inline;"
+                  onsubmit="return confirm('Delete this announcement?');">
+              <button type="submit" class="btn btn-danger btn-sm">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="7" class="text-muted" style="text-align:center;">
+            No announcements added yet.
+          </td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

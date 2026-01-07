@@ -1,0 +1,243 @@
+{% extends 'base.html' %} {% block title %}About • Computer Science Department{%
+endblock %} {% block extra_css %}
+<style>
+  /* Removed different hero color - now uses unified theme from base */
+  .about-hero p {
+    color: var(--text-light);
+    max-width: 900px;
+    margin: 0 auto;
+    line-height: 1.8;
+    text-align: left;
+  }
+
+  .about-section {
+    padding: 3rem 0;
+  }
+
+  .vision-mission {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .vision-card,
+  .mission-card {
+    background: var(--card);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--shadow);
+    border-top: 4px solid var(--secondary);
+  }
+
+  .vision-card h2,
+  .mission-card h2 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+  }
+
+  .vision-card h2 i,
+  .mission-card h2 i {
+    color: var(--secondary);
+    margin-right: 0.5rem;
+  }
+
+  .mission-card ul {
+    padding-left: 1.5rem;
+  }
+
+  .mission-card li {
+    margin-bottom: 0.5rem;
+  }
+
+  .faculty-section {
+    padding: 3rem 0;
+  }
+
+  .faculty-section h2 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+  }
+
+  .faculty-table-container {
+    overflow-x: auto;
+  }
+  .faculty-table-container th,
+  td {
+    border: 1px solid black;
+  }
+
+  .faculty-photo {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--primary);
+  }
+
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--primary);
+    color: var(--text-light);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+  }
+
+  .download-btn:hover {
+    background: var(--secondary);
+    color: var(--primary-dark);
+  }
+
+  .infra-section h2 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+  }
+
+  .infra-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .infra-tile {
+    height: 180px;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 8px var(--shadow);
+  }
+
+  .infra-tile:hover {
+    transform: scale(1.03);
+  }
+
+  @media (max-width: 768px) {
+    .vision-mission {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+<section class="page-hero about-hero">
+  <div class="container">
+    <h1>About the Department</h1>
+    <p>
+      The Department of Computer Science was established in the year 1999 with
+      one optional subject computer science for B. Sc. Programme. The need of
+      this department was for awareness of education in computer science in the
+      rural area. Currently following academic programmes are being offered:<br>
+      <br>
+       1. B.Sc. (Computer Science) as a Major <br>2. M.Sc. (Computer Science) <br>3. B.Voc. (Computer Technology) <br>4. B.Sc. Data Science
+       <br>
+       <br>
+       <hr>
+    </p>
+    <br>
+    <p>
+       Some of the significant features of the department are as follows:<br>
+      1. Qualified and Experienced Staff<br>
+      2. Well Equipped Laboratories with Internet Facility<br>
+      3. E-Learning Facility<br>
+      4. Industry Partnership for Projects and Internship<br>
+    </p>
+    <br>
+    <hr>
+    <br>
+    <p>
+      From the year 2017-18 Choice Based Credit System (CBCS) pattern has been implemented at B. Sc. Programme. Webpage Designing and Introduction to SCILAB courses are introduced as Skill Enhancement Courses. In M. Sc. curriculum department has included ASP.Net, PHP, Python Programming, IoT, Big Data Analysis and Soft Computing Courses as recent industry requirements. B. Voc. curriculum has been designed as per NSQF standards including the job roles web developer, Trainer for Junior Software Developer and Software Developer levels 5, 6 and 7 respectively.
+    </p>
+  </div>
+</section>
+
+<section class="about-section container">
+  <div class="vision-mission">
+    <div class="vision-card">
+      <h2><i class="fa-solid fa-eye"></i> Vision</h2>
+      <p>
+        To be a center of excellence in computing education and research,
+        producing skilled professionals who contribute to technological
+        advancement and societal development.
+      </p>
+    </div>
+    <div class="mission-card">
+      <h2><i class="fa-solid fa-bullseye"></i> Mission</h2>
+      <ul>
+        <li>
+          Deliver high-quality education and hands-on learning experiences
+        </li>
+        <li>Encourage innovation, ethics, and leadership among students</li>
+        <li>
+          Collaborate with industry and research labs for practical exposure
+        </li>
+        <li>
+          Foster research in emerging technologies like AI, IoT, and Data
+          Science
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="faculty-section container">
+  <h2>Meet Our Faculty</h2>
+  <div class="faculty-table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Photo</th>
+          <th>Name</th>
+          <th>Position</th>
+          <th>Qualification</th>
+          <th>Resume</th>
+        </tr>
+      </thead>
+      <tbody id="facultyTableBody">
+        {% if faculty %} {% for f in faculty %}
+        <tr>
+          <td>
+            <img
+              src="{{ f.photo or '/placeholder.svg?height=80&width=80' }}"
+              alt="{{ f.name }}"
+              class="faculty-photo"
+              onerror="this.src='/placeholder.svg?height=80&width=80'"
+            />
+          </td>
+          <td>{{ f.name }}</td>
+          <td>{{ f.role }}</td>
+          <td>{{ f.qualification or '-' }}</td>
+          <td>
+            {% if f.resume %}
+            <a href="{{ f.resume }}" target="_blank" class="download-btn">
+              <i class="fa-solid fa-download"></i> Download
+            </a>
+            {% else %} - {% endif %}
+          </td>
+        </tr>
+        {% endfor %} {% else %}
+        <tr>
+          <td colspan="5" class="text-center">No faculty data available</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="container infra-section mb-3">
+  <h2>Infrastructure</h2>
+  <div class="infra-grid" id="infraGrid">
+    {% if infra %} {% for item in infra %}
+    <div
+      class="infra-tile"
+      style="background-image: url('{{ item.image or '/placeholder.svg?height=180&width=250' }}')"
+    ></div>
+    {% endfor %} {% else %} ... {% endif %}
+  </div>
+</section>
+{% endblock %}

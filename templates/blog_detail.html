@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} • Blog • Computer Science Department{% endblock %}
+
+{% block extra_css %}
+<style>
+    .blog-detail-page {
+        padding: 3rem 0;
+    }
+    .blog-detail-card {
+        background: var(--card);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 12px 30px var(--shadow);
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    .blog-detail-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 1rem;
+    }
+    .blog-detail-meta span i { margin-right: 0.4rem; }
+    .blog-detail-content {
+        margin-top: 1rem;
+        line-height: 1.7;
+        font-size: 1rem;
+        white-space: pre-wrap;
+    }
+    .blog-detail-attachment {
+        margin-top: 1.5rem;
+    }
+    .blog-detail-attachment img {
+        max-width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px var(--shadow);
+    }
+    .blog-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    .like-btn {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.95rem;
+        color: var(--primary);
+    }
+    .like-btn i {
+        font-size: 1.2rem;
+    }
+    .like-btn.liked i {
+        color: #e0245e;
+    }
+    .comments-section {
+        margin-top: 2.5rem;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .comments-section h3 {
+        margin-bottom: 1rem;
+    }
+    .comment-card {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 0.9rem 1rem;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    }
+    .comment-meta {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-bottom: 0.4rem;
+    }
+    .comment-text {
+        font-size: 0.95rem;
+    }
+    .comment-form {
+        margin-top: 1rem;
+    }
+    .comment-form textarea {
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        padding: 0.75rem;
+        resize: vertical;
+        min-height: 80px;
+        font-family: inherit;
+    }
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.9rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+    .back-link i { font-size: 0.9rem; }
+    @media (max-width: 768px) {
+        .blog-detail-card {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="blog-detail-page container">
+    <a href="{{ url_for('blog') }}" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> Back to all posts
+    </a>
+
+    <article class="blog-detail-card">
+        <h1>{{ post.title }}</h1>
+
+        <div class="blog-detail-meta">
+            <span><i class="fa-solid fa-user"></i> {{ post.author_name }}{% if post.author_type == 'faculty' %} (Faculty){% endif %}</span>
+            {% if post.student_id %}
+            <span><i class="fa-solid fa-id-card"></i> {{ post.student_id }}</span>
+            {% endif %}
+            {% if post.created_at %}
+            <span><i class="fa-solid fa-calendar"></i> {{ post.created_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+            {% endif %}
+        </div>
+
+        <div class="blog-detail-content">
+            {{ post.content }}
+        </div>
+
+        {% if post.file_url %}
+        <div class="blog-detail-attachment">
+            {% if post.file_type == 'pdf' %}
+                <a href="{{ post.file_url }}" target="_blank" class="btn primary">
+                    <i class="fa-solid fa-file-pdf"></i> View PDF
+                </a>
+            {% elif post.file_type == 'image' %}
+                <img src="{{ post.file_url }}" alt="{{ post.title }}">
+            {% else %}
+                <a href="{{ post.file_url }}" target="_blank" class="btn primary">
+                    <i class="fa-solid fa-link"></i> Open Attachment
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="blog-actions">
+            <button id="likeBtn" class="like-btn{% if liked %} liked{% endif %}" onclick="toggleLike('{{ post.id }}', true)">
+                <i class="fa-solid fa-heart"></i>
+                <span id="likeCount">{{ post.like_count }}</span> likes
+            </button>
+            <span style="font-size:0.9rem; color:var(--text-muted);">
+                {{ post.comment_count }} comments
+            </span>
+        </div>
+    </article>
+
+    <section class="comments-section">
+        <h3>Comments</h3>
+
+        <div id="commentsList">
+            {% if comments %}
+                {% for c in comments %}
+                <div class="comment-card">
+                    <div class="comment-meta">
+                        <strong>{{ c.author_name }}</strong>
+                        {% if c.author_type == 'faculty' %}<span>(Faculty)</span>{% endif %}
+                        {% if c.created_at %}
+                            • {{ c.created_at.strftime('%d %b %Y, %I:%M %p') }}
+                        {% endif %}
+                    </div>
+                    <div class="comment-text">{{ c.text }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted" id="noCommentsMsg">No comments yet. Be the first to comment!</p>
+            {% endif %}
+        </div>
+
+        <div class="comment-form">
+            <p class="text-muted" style="font-size:0.85rem;">
+                You must be logged in as a student or faculty member to comment.
+            </p>
+            <textarea id="commentText" placeholder="Write your comment..."></textarea>
+            <button class="btn primary mt-1" onclick="submitComment('{{ post.id }}')">
+                <i class="fa-solid fa-comment-dots"></i> Post Comment
+            </button>
+        </div>
+    </section>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleLike(blogId, updateDetail) {
+        fetch(`/api/blog/${blogId}/like`, {
+            method: 'POST'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                alert(data.message || 'Unable to like this post.');
+                return;
+            }
+            if (updateDetail) {
+                const countEl = document.getElementById('likeCount');
+                if (countEl) countEl.textContent = data.like_count;
+                const btn = document.getElementById('likeBtn');
+                if (btn) btn.classList.toggle('liked', data.liked);
+            }
+        })
+        .catch(err => console.error(err));
+    }
+
+    function submitComment(blogId) {
+        const textEl = document.getElementById('commentText');
+        const text = textEl.value.trim();
+        if (!text) {
+            alert('Please write a comment first.');
+            return;
+        }
+
+        fetch(`/api/blog/${blogId}/comment`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                alert(data.message || 'Unable to add comment.');
+                return;
+            }
+            textEl.value = '';
+            const list = document.getElementById('commentsList');
+            const noMsg = document.getElementById('noCommentsMsg');
+            if (noMsg) noMsg.remove();
+
+            const c = data.comment;
+            const wrapper = document.createElement('div');
+            wrapper.className = 'comment-card';
+            const when = new Date(c.created_at || Date.now());
+            wrapper.innerHTML = `
+                <div class="comment-meta">
+                    <strong>${c.author_name}</strong>
+                    ${c.author_type === 'faculty' ? '<span>(Faculty)</span>' : ''}
+                    • ${when.toLocaleString()}
+                </div>
+                <div class="comment-text">${c.text}</div>
+            `;
+            list.appendChild(wrapper);
+        })
+        .catch(err => console.error(err));
+    }
+</script>
+{% endblock %}

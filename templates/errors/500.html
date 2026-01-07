@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Server Error - CS Department{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <h1>500 - Server Error</h1>
+    <p>Something went wrong on our end.</p>
+</div>
+
+<section class="section">
+    <div class="container" style="text-align: center;">
+        <i class="fas fa-server" style="font-size: 80px; color: var(--secondary-color); margin-bottom: 20px;"></i>
+        <h2>Internal Server Error</h2>
+        <p style="margin: 20px 0;">We're sorry, but something went wrong on our server. Please try again later.</p>
+        <a href="{{ url_for('home') }}" class="btn btn-primary">
+            <i class="fas fa-home"></i> Go to Homepage
+        </a>
+    </div>
+</section>
+{% endblock %}

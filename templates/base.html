@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Computer Science Department - CSA Website" />
+    <title>{% block title %}Computer Science Department{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <style>
+        /* Unified color scheme - Navy blue and gold theme for all pages */
+        :root {
+            --primary: #1e3a5f;
+            --primary-light: #2d5a8a;
+            --primary-dark: #0f1f33;
+            --secondary: #c9a227;
+            --secondary-light: #e0be5c;
+            --bg: #f4f6f9;
+            --text: #1e293b;
+            --text-light: #ffffff;
+            --muted: #64748b;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --highlight: #e8eef5;
+            --shadow: rgba(30, 58, 95, 0.12);
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            font-family: 'Poppins', 'Lato', system-ui, -apple-system, sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            line-height: 1.6;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        .container {
+            width: min(1200px, 94%);
+            margin-inline: auto;
+            padding: 0 1rem;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            margin: 0.3rem 0 0.6rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        p {
+            color: var(--text);
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: var(--secondary);
+        }
+
+        /* Buttons - Updated with consistent theme */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn.primary {
+            background: var(--primary);
+            color: var(--text-light);
+        }
+
+        .btn.primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn.secondary {
+            background: var(--secondary);
+            color: var(--primary-dark);
+        }
+
+        .btn.secondary:hover {
+            background: var(--secondary-light);
+        }
+
+        .btn.ghost {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: transparent;
+        }
+
+        .btn.ghost:hover {
+            background: var(--primary);
+            color: var(--text-light);
+        }
+
+        .btn.danger {
+            background: var(--error);
+            color: var(--text-light);
+        }
+
+        .btn.success {
+            background: var(--success);
+            color: var(--text-light);
+        }
+
+        .btn.small {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        /* Header - Updated with unified theme */
+        .site-header {
+            position: sticky;
+            top: 0;
+            background: var(--primary);
+            border-bottom: 3px solid var(--secondary);
+            z-index: 100;
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .logo img {
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            padding: 0.5rem 0.85rem;
+            border-radius: 6px;
+            color: var(--text-light);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            background: var(--secondary);
+            color: var(--primary-dark);
+        }
+
+        .nav a.logout {
+            color: #fca5a5;
+        }
+
+        .nav a.logout:hover {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        /* Footer - Updated with unified theme */
+        .site-footer {
+            margin-top: 3rem;
+            background: var(--primary-dark);
+            color: #d1d5db;
+            padding-top: 2rem;
+        }
+
+        .site-footer h4 {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .site-footer a {
+            color: #e5e7eb;
+        }
+
+        .site-footer p {
+            color: #e5e7eb;
+        }
+
+        .site-footer a:hover {
+            color: var(--secondary);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .footer-grid ul {
+            list-style: none;
+        }
+
+        .footer-grid li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #2d4a6a;
+            padding: 1rem 0;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        .socials {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .socials a {
+            font-size: 1.3rem;
+        }
+
+        /* Hero Sections - Unified gradient for all pages */
+        .page-hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--text-light);
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--secondary);
+        }
+
+        .page-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .page-hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            color: var(--text-light);
+        }
+
+        /* Forms */
+        .form-field {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-field label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .form-field input,
+        .form-field textarea,
+        .form-field select {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-field input:focus,
+        .form-field textarea:focus,
+        .form-field select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--highlight);
+        }
+
+        .form-field textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Grid layouts */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .alert.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        .alert.warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #f59e0b;
+        }
+
+        .alert.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #3b82f6;
+        }
+
+        /* Tables */
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--primary);
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: var(--highlight);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--muted);
+        }
+
+        /* PROFILE / AUTH AREA */
+        .auth-area {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .profile-chip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.45);
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .profile-chip-name {
+            max-width: 130px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .avatar-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            overflow: hidden;
+            /* important so image stays circular */
+        }
+
+        .avatar-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* Responsive */
+        /* Responsive */
+        @media (max-width: 768px) {
+
+            /* Mobile nav – dropdown below header */
+            .nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--primary);
+                flex-direction: column;
+                padding: 1rem;
+                border-top: 1px solid var(--primary-light);
+                z-index: 99;
+            }
+
+            .nav.active {
+                display: flex;
+            }
+
+            /* Show hamburger icon on mobile */
+            .menu-btn {
+                display: block;
+                font-size: 1.6rem;
+                margin-left: 0.75rem;
+            }
+
+            /* On mobile: keep header content on ONE row */
+            .header-inner {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: nowrap;
+                /* important: no wrapping */
+                gap: 0.5rem;
+            }
+
+            /* Order: [ LOGO ]  [ PROFILE ]  [ ☰ ] */
+            .logo {
+                order: 1;
+            }
+
+            .auth-area {
+                order: 2;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                width: auto;
+                /* no full width */
+                margin-left: auto;
+                /* pushes profile to the right */
+            }
+
+            .menu-btn {
+                order: 3;
+            }
+
+            /* Slightly shorten the name on very small screens */
+            .profile-chip-name {
+                max-width: 90px;
+            }
+
+            /* Keep your existing mobile footer + hero behaviour */
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .page-hero h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+
+        .text-muted {
+            color: var(--muted);
+        }
+
+        .mt-1 {
+            margin-top: 0.5rem;
+        }
+
+        .mt-2 {
+            margin-top: 1rem;
+        }
+
+        .mt-3 {
+            margin-top: 1.5rem;
+        }
+
+        .mb-1 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-3 {
+            margin-bottom: 1.5rem;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+
+        .gap-1 {
+            gap: 0.5rem;
+        }
+
+        .gap-2 {
+            gap: 1rem;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        /* Accent elements */
+        .accent-bar {
+            width: 60px;
+            height: 4px;
+            background: var(--secondary);
+            margin: 0.5rem auto 1.5rem;
+            border-radius: 2px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        /* ===== Curriculum Page ===== */
+        .curriculum-page {
+            max-width: 1100px;
+        }
+
+        /* Page Title */
+        .curriculum-page .section-title {
+            margin-top: 10px;
+            /* move title down slightly */
+            margin-bottom: 6px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Subtitle */
+        .curriculum-page .text-muted {
+            margin-bottom: 14px;
+            /* bring text closer */
+            font-size: 0.95rem;
+        }
+
+        /* Intro paragraph */
+        .curriculum-page p {
+            max-width: 850px;
+            margin: 0 auto 22px;
+            line-height: 1.6;
+            color: #334155;
+            text-align: center;
+        }
+
+        /* Table wrapper */
+        .curriculum-table {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+            background: #ffffff;
+        }
+
+        /* Table header */
+        .curriculum-table thead th {
+            background: #1e3a5f;
+            /* matches your theme */
+            color: #ffffff;
+            font-weight: 600;
+            padding: 14px;
+            text-align: center;
+            border: none;
+        }
+
+        /* First column alignment */
+        .curriculum-table tbody td:first-child {
+            font-weight: 600;
+            color: #0f172a;
+            padding-left: 18px;
+        }
+
+        /* Table cells */
+        .curriculum-table tbody td {
+            padding: 14px;
+            vertical-align: middle;
+            border-color: #e5e7eb;
+        }
+        /* Row hover */
+        .curriculum-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        /* View button */
+        .curriculum-table .btn-outline-primary {
+            border-radius: 999px;
+            padding: 4px 14px;
+            font-size: 0.85rem;
+        }
+
+        /* Mobile tweaks */
+        @media (max-width: 768px) {
+            .curriculum-page p {
+                text-align: left;
+                padding: 0 10px;
+            }
+
+            .curriculum-table thead th {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            {% set current_student = session.get('student') %}
+            {% set current_faculty = session.get('faculty') %}
+
+            <a class="logo" href="{{ url_for('home') }}">
+                <img src="/static/images/rsml_logo.png" alt="CSD Logo" onerror="this.style.display='none'">
+                <span>Department of Computer Science</span>
+            </a>
+
+            <nav class="nav" id="mainNav">
+                <a href="{{ url_for('home') }}" {% if request.endpoint in ['home', 'index' ] %}class="active" {% endif
+                    %}>Home</a>
+                <a href="{{ url_for('about') }}" {% if request.endpoint=='about' %}class="active" {% endif %}>About
+                    Us</a>
+                <a href="{{ url_for('blog') }}" {% if request.endpoint in ['blog', 'blog_detail' ] %}class="active" {%
+                    endif %}>Blog</a>
+                <a href="{{ url_for('csa') }}" {% if request.endpoint=='csa' %}class="active" {% endif %}>CSA</a>
+                <a href="{{ url_for('events') }}" {% if request.endpoint=='events' %}class="active" {% endif
+                    %}>Events</a>
+                <a href="{{ url_for('contact') }}" {% if request.endpoint=='contact' %}class="active" {% endif
+                    %}>Contact Us</a>
+            </nav>
+
+            <!-- Auth / Profile Area -->
+            <div class="auth-area">
+                {% if current_student or current_faculty %}
+                {% set u = current_student or current_faculty %}
+                <a href="{{ url_for('profile') }}" class="profile-chip">
+                    <div class="avatar-circle">
+                        {% if u.avatar or u.profile_image %}
+                        <img src="{{ u.avatar or u.profile_image }}" alt="Profile">
+                        {% else %}
+                        {{ (u.name or 'U')[0]|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div class="profile-chip-name">
+                        {{ u.name }}
+                    </div>
+                </a>
+                {% endif %}
+                {# If no one is logged in, this area stays empty #}
+            </div>
+
+            <button class="menu-btn" id="menuBtn" aria-label="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div>
+                <h4>Computer Science Department</h4>
+                <p>Excellence in Innovation, Research & Collaboration.</p>
+                <p class="mt-2">Rajarshi Shahu College, Latur</p>
+            </div>
+            <div>
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
+                    <li><a href="{{ url_for('blog') }}">Blog</a></li>
+                    <li><a href="{{ url_for('csa') }}">CSA</a></li>
+                    <li><a href="{{ url_for('events') }}">Events</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Contact</h4>
+                <p>Email: shaikhrajjak126@gmail.com<br>Phone: +91-00000-00000</p>
+                <div class="socials">
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2025 Computer Science Department | Rajarshi Shahu College, Latur | All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menuBtn')?.addEventListener('click', () => {
+            document.getElementById('mainNav')?.classList.toggle('active');
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

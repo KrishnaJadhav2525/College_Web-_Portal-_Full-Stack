@@ -1,0 +1,59 @@
+{% extends "admin/base.html" %}
+{% block content %}
+
+<div class="admin-section">
+  <h3>Alumni / Student Testimonials</h3>
+
+  <!-- ADD FORM -->
+  <form method="POST" action="{{ url_for('add_alumni') }}" enctype="multipart/form-data"
+        class="admin-form">
+
+    <input type="text" name="name" placeholder="Student Name" required>
+
+    <textarea name="message" placeholder="Testimonial text" required></textarea>
+
+    <input type="file" name="photo" accept="image/*" required>
+
+    <button type="submit" class="btn primary">Add Testimonial</button>
+  </form>
+
+  <hr>
+
+  <!-- LIST -->
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Photo</th>
+        <th>Name</th>
+        <th>Message</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for a in records %}
+      <tr>
+        <td>
+          <img src="{{ a.photo }}" style="width:60px;border-radius:6px;">
+        </td>
+        <td>{{ a.name }}</td>
+        <td style="max-width:400px;">{{ a.message }}</td>
+        <td>
+          <a href="{{ url_for('delete_alumni', aid=a.id) }}"
+             onclick="return confirm('Delete this testimonial?')"
+             class="btn danger small">
+            Delete
+          </a>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="4" style="text-align:center;color:#64748b;">
+          No testimonials added yet.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

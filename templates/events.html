@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+
+{% block title %}Events • Computer Science Department{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Removed different hero color - now uses unified theme from base */
+    .event-highlight {
+        background: var(--card);
+        padding: 2rem;
+        border-radius: 12px;
+        margin: 2rem 0;
+        box-shadow: 0 4px 12px var(--shadow);
+        border-top: 4px solid var(--secondary);
+    }
+    
+    .highlight-box {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    .highlight-box h2 {
+        display: inline-block;
+        background: var(--primary);
+        color: var(--text-light);
+        padding: 0.75rem 2rem;
+        border-radius: 6px;
+    }
+    
+    .slider-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    
+    .slider {
+        display: flex;
+        transition: transform 0.5s ease;
+    }
+    
+    .slide {
+        min-width: 100%;
+    }
+    
+    .slide img {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    
+    .slider-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: var(--primary);
+        color: var(--text-light);
+        border: none;
+        padding: 1rem;
+        cursor: pointer;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        transition: background 0.2s;
+    }
+    
+    .slider-btn:hover { background: var(--secondary); color: var(--primary-dark); }
+    .slider-btn.prev { left: 10px; }
+    .slider-btn.next { right: 10px; }
+    
+    .events-section {
+        padding: 2rem 0;
+    }
+    
+    .events-section h2 {
+        margin-bottom: 1.5rem;
+        color: var(--primary);
+    }
+    
+    .event-card {
+        background: var(--card);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px var(--shadow);
+        transition: transform 0.3s ease;
+        border-left: 4px solid var(--secondary);
+    }
+    
+    .event-card:hover { transform: translateY(-5px); }
+    
+    .event-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+    
+    .event-card-body {
+        padding: 1.5rem;
+    }
+    
+    .event-card h3 {
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+    
+    .event-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 0.75rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+    }
+    
+    .event-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .event-meta i {
+        color: var(--secondary);
+    }
+    
+    @media (max-width: 768px) {
+        .slide img { height: 250px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <h1>Events</h1>
+        <p>Explore upcoming and past events by the department & CSA.</p>
+    </div>
+</section>
+
+<section class="container">
+    <div class="highlight-box">
+        <h2>Event Highlights</h2>
+    </div>
+    
+    <div class="slider-container">
+        <div class="slider" id="eventSlider">
+            <!-- Slides will be loaded dynamically -->
+        </div>
+        <button class="slider-btn prev" onclick="prevSlide()">&#10094;</button>
+        <button class="slider-btn next" onclick="nextSlide()">&#10095;</button>
+    </div>
+</section>
+
+<section class="events-section container">
+    <h2>Upcoming Events</h2>
+    {% if upcoming %}
+    <div class="grid grid-3">
+        {% for event in upcoming %}
+        <div class="event-card">
+            <img src="{{ event.image or '/placeholder.svg?height=180&width=300' }}" alt="{{ event.title }}">
+            <div class="event-card-body">
+                <h3>{{ event.title }}</h3>
+                <div class="event-meta">
+                    <span><i class="fa-solid fa-calendar"></i> {{ event.date.strftime('%d %b %Y') }}</span>
+                    <span><i class="fa-solid fa-clock"></i> {{ event.date.strftime('%I:%M %p') }}</span>
+                    {% if event.location %}
+                    <span><i class="fa-solid fa-location-dot"></i> {{ event.location }}</span>
+                    {% endif %}
+                </div>
+                <p>{{ event.description or '' }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted">No upcoming events at the moment. Check back soon!</p>
+    {% endif %}
+</section>
+
+<section class="events-section container">
+    <h2>Past Events</h2>
+    {% if past %}
+    <div class="grid grid-3">
+        {% for event in past %}
+        <div class="event-card">
+            <img src="{{ event.image or '/placeholder.svg?height=180&width=300' }}" alt="{{ event.title }}">
+            <div class="event-card-body">
+                <h3>{{ event.title }}</h3>
+                <div class="event-meta">
+                    <span><i class="fa-solid fa-calendar"></i> {{ event.date.strftime('%d %b %Y') }}</span>
+                    {% if event.location %}
+                    <span><i class="fa-solid fa-location-dot"></i> {{ event.location }}</span>
+                    {% endif %}
+                </div>
+                <p>{{ event.description or '' }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted">No past events to display.</p>
+    {% endif %}
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let currentSlide = 0;
+    let slides = [];
+    let slider = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        slider = document.getElementById('eventSlider');
+        if (!slider) return;
+
+        // Load highlight images from gallery (category='events')
+        fetch('/api/gallery?category=events')
+            .then(res => res.json())
+            .then(data => {
+                if (!data || !data.length) {
+                    // Fallback: single placeholder slide
+                    const div = document.createElement('div');
+                    div.className = 'slide';
+                    div.innerHTML = '<img src="/placeholder.svg?height=400&width=800" alt="Event">';
+                    slider.appendChild(div);
+                } else {
+                    data.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'slide';
+                        const imgUrl = item.image || '/placeholder.svg?height=400&width=800';
+                        div.innerHTML = `<img src="${imgUrl}" alt="${item.title || 'Event'}">`;
+                        slider.appendChild(div);
+                    });
+                }
+                slides = slider.querySelectorAll('.slide');
+                showSlide(0);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+
+        // Auto-advance slides
+        setInterval(nextSlide, 5000);
+    });
+
+    function showSlide(index) {
+        if (!slides.length || !slider) return;
+        if (index >= slides.length) currentSlide = 0;
+        else if (index < 0) currentSlide = slides.length - 1;
+        else currentSlide = index;
+        slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+
+    function nextSlide() { showSlide(currentSlide + 1); }
+    function prevSlide() { showSlide(currentSlide - 1); }
+</script>
+{% endblock %}
+

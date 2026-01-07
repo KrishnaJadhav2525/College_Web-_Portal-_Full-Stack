@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Admin{% endblock %} • CSD Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.2rem;
+        }
+
+        .sidebar-header p {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-menu a i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 2rem;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .top-bar h1 {
+            font-size: 1.5rem;
+            color: #1e293b;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            padding: 0.5rem 1rem;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: #3b82f6;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eff6ff;
+            border-radius: 12px;
+        }
+
+        .stat-card.warning i {
+            color: #f59e0b;
+            background: #fef3c7;
+        }
+
+        .stat-card.success i {
+            color: #10b981;
+            background: #d1fae5;
+        }
+
+        .stat-card.danger i {
+            color: #ef4444;
+            background: #fee2e2;
+        }
+
+        .stat-number {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: block;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .dashboard-card h3 {
+            margin-bottom: 1rem;
+            color: #1e293b;
+            font-size: 1.1rem;
+        }
+
+        .recent-list {
+            list-style: none;
+        }
+
+        .recent-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .recent-list li:last-child {
+            border-bottom: none;
+        }
+
+        .recent-list small {
+            display: block;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        .view-all {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+
+        /* Table styles */
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #64748b;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.9;
+        }
+
+        .btn-sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        /* Forms */
+        .form-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            max-width: 800px;
+        }
+
+        .form-field {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .form-field input,
+        .form-field textarea,
+        .form-field select {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-field input:focus,
+        .form-field textarea:focus,
+        .form-field select:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .alert.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-inactive {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        /* Filter tabs */
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-tab {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #64748b;
+            text-decoration: none;
+        }
+
+        .filter-tab.active,
+        .filter-tab:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .text-muted {
+            color: #64748b;
+        }
+
+        .mb-2 {
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== ADMIN CURRICULUM PAGE ===== */
+
+        .admin-section {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+
+        .admin-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            color: #0f172a;
+        }
+
+        /* Upload form */
+        .curriculum-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .curriculum-form select,
+        .curriculum-form input[type="file"] {
+            padding: 0.45rem 0.6rem;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        .curriculum-form button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .curriculum-form button:hover {
+            background: #1d4ed8;
+        }
+
+        /* Table */
+        .curriculum-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.5rem;
+        }
+
+        .curriculum-table th {
+            background: #f1f5f9;
+            color: #0f172a;
+            text-align: left;
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .curriculum-table td {
+            padding: 0.7rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.9rem;
+        }
+
+        .curriculum-table tr:hover {
+            background: #f8fafc;
+        }
+
+        /* Action buttons */
+        .btn-view {
+            color: #2563eb;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .btn-view:hover {
+            text-decoration: underline;
+        }
+
+        .btn-delete {
+            color: #dc2626;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .btn-delete:hover {
+            text-decoration: underline;
+        }
+
+        /* Alerts */
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        /* =====================================================
+   ADMIN – ALUMNI / STUDENT TESTIMONIALS
+===================================================== */
+
+        .admin-section {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        /* ---------- Heading ---------- */
+        .admin-section h3 {
+            font-size: 1.4rem;
+            margin-bottom: 18px;
+            color: #0f172a;
+        }
+
+        /* =====================================================
+   FORM
+===================================================== */
+
+        .admin-section .admin-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .admin-section .admin-form input[type="text"],
+        .admin-section .admin-form textarea,
+        .admin-section .admin-form input[type="file"] {
+            padding: 9px 10px;
+            border-radius: 8px;
+            border: 1px solid #cbd5f5;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .admin-section .admin-form input[type="text"] {
+            width: 220px;
+        }
+
+        .admin-section .admin-form textarea {
+            width: 320px;
+            min-height: 44px;
+            max-height: 120px;
+            resize: vertical;
+        }
+
+        .admin-section .admin-form input[type="file"] {
+            width: 220px;
+            background: #f8fafc;
+        }
+
+        .admin-section .admin-form button {
+            padding: 9px 18px;
+            border-radius: 10px;
+            border: none;
+            background: #2563eb;
+            color: #ffffff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.15s ease;
+        }
+
+        .admin-section .admin-form button:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        /* =====================================================
+   TABLE
+===================================================== */
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        /* Header */
+        .admin-table thead {
+            background: #f1f5f9;
+        }
+
+        .admin-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 700;
+            color: #0f172a;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        /* Body cells */
+        .admin-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: middle;
+
+            /* 🔑 Prevent text overflow */
+            word-wrap: break-word;
+            word-break: break-word;
+            white-space: normal;
+        }
+
+        /* Alternate rows */
+        .admin-table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        /* =====================================================
+   IMAGE COLUMN
+===================================================== */
+
+        .admin-table td img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* =====================================================
+   MESSAGE COLUMN
+===================================================== */
+
+        .admin-table td:nth-child(3) {
+            max-width: 420px;
+            line-height: 1.55;
+            color: #334155;
+        }
+
+        /* =====================================================
+   ACTION BUTTON
+===================================================== */
+
+        .admin-table .btn.danger.small {
+            background: transparent;
+            color: #dc2626;
+            font-weight: 600;
+            padding: 0;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .admin-table .btn.danger.small:hover {
+            text-decoration: underline;
+        }
+
+        /* =====================================================
+   EMPTY STATE
+===================================================== */
+
+        .admin-table tbody tr td[colspan] {
+            padding: 20px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .admin-brand.horizontal {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* center the whole block */
+            gap: 16px;
+            padding: 28px 20px 22px;
+        }
+
+        /* LOGO */
+        .admin-logo {
+            width: 35%;
+            height: 35%;
+            object-fit: contain;
+            padding-left: 10px;
+        }
+
+        /* TEXT */
+        .admin-text {
+            text-align: left;
+        }
+
+        .admin-text h1 {
+            margin: 0;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .admin-text span {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="admin-brand horizontal">
+            <img src="{{ url_for('static', filename='images/admin-logo.png') }}" alt="CSD Logo" class="admin-logo">
+
+            <div class="admin-text">
+                <h1>CSD Admin</h1>
+                <span>Management Panel</span>
+            </div>
+        </div>
+
+        <ul class="nav-menu">
+            <li><a href="{{ url_for('admin_dashboard') }}" {% if request.endpoint=='admin_dashboard' %}class="active" {%
+                    endif %}><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+            <li><a href="{{ url_for('admin_blogs') }}" {% if 'blog' in request.endpoint %}class="active" {% endif %}><i
+                        class="fa-solid fa-newspaper"></i> Blog Posts</a></li>
+            <li><a href="{{ url_for('admin_students') }}" {% if 'student' in request.endpoint %}class="active" {% endif
+                    %}><i class="fa-solid fa-users"></i> Students</a></li>
+            <li><a href="{{ url_for('admin_contacts') }}" {% if 'contact' in request.endpoint %}class="active" {% endif
+                    %}><i class="fa-solid fa-envelope"></i> Contact Messages</a></li>
+            <li><a href="{{ url_for('admin_faculty') }}" {% if 'faculty' in request.endpoint %}class="active" {% endif
+                    %}><i class="fa-solid fa-chalkboard-teacher"></i> Faculty</a></li>
+            <li><a href="{{ url_for('admin_events') }}" {% if 'event' in request.endpoint %}class="active" {% endif
+                    %}><i class="fa-solid fa-calendar"></i> Events</a></li>
+            <li><a href="{{ url_for('admin_notifications') }}" {% if 'notification' in request.endpoint %}class="active"
+                    {% endif %}><i class="fa-solid fa-bell"></i> Notifications</a></li>
+            <li><a href="{{ url_for('admin_csa_members') }}" {% if 'csa' in request.endpoint %}class="active" {% endif
+                    %}><i class="fa-solid fa-people-group"></i> CSA Members</a></li>
+            <li><a href="{{ url_for('admin_gallery') }}" {% if 'gallery' in request.endpoint %}class="active" {% endif
+                    %}><i class="fa-solid fa-images"></i> Gallery</a></li>
+            <li><a href="{{ url_for('admin_research') }}" {% if 'research' in request.endpoint %}class="active" {% endif
+                    %}><i class="fa-solid fa-flask"></i> Research</a></li>
+            <li><a href="{{ url_for('admin_curriculum') }}"><i class="fa-solid fa-book"></i>Curriculum</a></li>
+            <li><a href="{{ url_for('admin_alumni') }}"><i class="fa-solid fa-user-graduate"></i>Alumni Testimonials</a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="top-bar">
+            <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+            <div class="user-info">
+                <span>Welcome, {{ session.get('admin_username', 'Admin') }}</span>
+                <a href="{{ url_for('admin_logout') }}" class="logout-btn"><i class="fa-solid fa-sign-out"></i>
+                    Logout</a>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert {{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+
+</html>

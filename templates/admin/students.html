@@ -1,0 +1,50 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Manage Students{% endblock %}
+{% block page_title %}Students{% endblock %}
+
+{% block content %}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Student ID</th>
+                <th>Email</th>
+                <th>Registered</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if students %}
+                {% for student in students %}
+                <tr>
+                    <td><strong>{{ student.name }}</strong></td>
+                    <td>{{ student.student_id }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.created_at.strftime('%d %b %Y') if student.created_at else '-' }}</td>
+                    <td>
+                        <span class="badge {% if student.is_active %}badge-active{% else %}badge-inactive{% endif %}">
+                            {{ 'Active' if student.is_active else 'Inactive' }}
+                        </span>
+                    </td>
+                    <td>
+                        <form action="{{ url_for('toggle_student', student_id=student._id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn {% if student.is_active %}btn-warning{% else %}btn-success{% endif %} btn-sm">
+                                {{ 'Deactivate' if student.is_active else 'Activate' }}
+                            </button>
+                        </form>
+                        <form action="{{ url_for('delete_student', student_id=student._id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this student?')">
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="6" class="text-muted" style="text-align:center;">No students registered</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

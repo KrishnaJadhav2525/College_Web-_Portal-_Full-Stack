@@ -1,0 +1,1228 @@
+{% extends 'base.html' %}
+{% block title %}Home • Computer Science Department{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* HERO (with animation) */
+  .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: var(--text-light);
+    padding: 5rem 0;
+    position: relative;
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--secondary);
+  }
+
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .hero-copy h1 {
+    font-size: 2.8rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: var(--text-light);
+  }
+
+  .hero-copy p {
+    font-size: 1.3rem;
+    opacity: 0.9;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-actions .btn.secondary {
+    background: var(--secondary);
+    color: var(--primary-dark);
+  }
+
+  .hero-actions .btn.ghost {
+    color: var(--text-light);
+    border-color: var(--text-light);
+  }
+
+  .hero-actions .btn.ghost:hover {
+    background: var(--text-light);
+    color: var(--primary);
+  }
+
+  .hero-visual img {
+    border-radius: 22px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+  }
+
+  @media (max-width: 768px) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+
+    .hero-copy h1 {
+      font-size: 2rem;
+    }
+
+    .hero-actions {
+      justify-content: center;
+    }
+
+    .hero-visual {
+      order: -1;
+    }
+  }
+
+  /* ===== ANNOUNCEMENTS AREA (ticker + board) ===== */
+
+  .announcements-wrapper {
+    margin-top: 1.75rem;
+  }
+
+  .announcement-ticker {
+    background: transparent;
+    padding: 0.5rem 0;
+    cursor: pointer;
+  }
+
+  .announcement-ticker .container {
+    margin: 0 auto;
+    border-radius: 200px;
+    padding: 0.4rem 1.1rem;
+    border: 1px solid black;
+    box-shadow: 0 6px 16px var(--shadow);
+  }
+
+  .ticker-inner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .ticker-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.15rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--text-light);
+  }
+
+  .ticker-label i {
+    color: var(--secondary);
+    cursor: grab;
+  }
+
+  .ticker-viewport {
+    overflow: hidden;
+    flex: 1;
+  }
+
+  .ticker-track {
+    display: inline-flex;
+    align-items: center;
+    gap: 2rem;
+    white-space: nowrap;
+    will-change: transform;
+  }
+
+  .ticker-track.scrolling {
+    animation: tickerMove 30s linear infinite;
+  }
+
+  .announcement-ticker:hover .ticker-track.scrolling {
+    animation-play-state: paused;
+  }
+
+  @keyframes tickerMove {
+    0% {
+      transform: translateX(100%);
+    }
+
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  .notification-board {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 2rem auto;
+    max-width: 800px;
+    box-shadow: 0 4px 12px var(--shadow);
+    border-top: 4px solid var(--secondary);
+  }
+
+  .notification-body {
+    max-height: 200px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .notification-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+  }
+
+  .notification-header i {
+    font-size: 1.5rem;
+    color: var(--secondary);
+  }
+
+  .notification-header h2 {
+    margin: 0;
+  }
+
+  .notification-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    will-change: transform;
+  }
+
+  .notification-list li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .notification-list li:last-child {
+    border-bottom: none;
+  }
+
+  .notification-list li:hover {
+    background: var(--highlight);
+  }
+
+  .notification-title {
+    font-weight: 600;
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .notification-meta {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 0.2rem;
+  }
+
+  .notification-text {
+    font-size: 0.9rem;
+  }
+
+  .notification-list.scrolling {
+    animation: scrollUp 20s linear infinite;
+  }
+
+  .notification-board:hover .notification-list.scrolling {
+    animation-play-state: paused;
+  }
+
+  @keyframes scrollUp {
+    0% {
+      transform: translateY(0);
+    }
+
+    100% {
+      transform: translateY(-50%);
+    }
+  }
+
+  /* ===== WHY CHOOSE OUR DEPARTMENT ===== */
+
+  .why-choose {
+    padding: 1rem 0 2.5rem;
+  }
+
+  .why-choose-header {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 2rem;
+  }
+
+  .why-choose-header h2 {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .why-choose-header p {
+    color: var(--muted);
+    font-size: 0.98rem;
+  }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  /* MOBILE VIEW: force 2 cards per row */
+  /*  MOBILE OPTIMIZATION FOR WHY-CHOOSE CARDS  */
+  @media (max-width: 600px) {
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      /* EXACTLY 2 CARDS IN A ROW */
+      gap: 0.75rem;
+      /* smaller spacing */
+    }
+
+    .why-card {
+      padding: 0.9rem 0.7rem;
+      /* tighter padding */
+      border-radius: 10px;
+      min-height: auto;
+      /* remove tall look */
+    }
+
+    .why-icon {
+      font-size: 1.5rem !important;
+      /* smaller icons */
+      margin-bottom: 0.4rem !important;
+    }
+
+    .why-title {
+      font-size: 0.9rem !important;
+      /* small but readable */
+      margin-bottom: 0.3rem;
+      line-height: 1.2;
+    }
+
+    .why-text {
+      font-size: 0.75rem !important;
+      /* reduce paragraph text */
+      line-height: 1.25;
+    }
+
+    /* Remove extreme height caused by long paragraphs */
+    .why-card p {
+      max-height: 130px;
+      /* keep cards even */
+      overflow: hidden;
+      /* hide extra text */
+    }
+  }
+
+  .why-card {
+    position: relative;
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.8rem 1.6rem;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 14px var(--shadow);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease,
+      border-color 0.25s ease, background 0.25s ease;
+  }
+
+  .why-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 0;
+    background: linear-gradient(90deg, var(--secondary), var(--primary-light));
+    transition: width 0.25s ease;
+  }
+
+  .why-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 30px rgba(15, 23, 42, 0.18);
+    border-color: transparent;
+    background: #f9fbff;
+  }
+
+  .why-card:hover::before {
+    width: 100%;
+  }
+
+  .why-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    background: rgba(201, 162, 39, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .why-icon i {
+    font-size: 1.6rem;
+    color: var(--secondary);
+  }
+
+  .why-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.4rem;
+    color: var(--primary);
+  }
+
+  .why-tag {
+    display: inline-block;
+    margin-bottom: 0.4rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  .why-card p {
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ===== PROGRAMS & COURSES (FLIP CARDS) ===== */
+
+  .programs-section {
+    padding: 1rem 0;
+    background: var(--bg);
+  }
+
+  .programs-header {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .programs-header h2 {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 0.4rem;
+  }
+
+  .programs-header p {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .programs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .program-card {
+    perspective: 1200px;
+  }
+
+  .program-inner {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    transform-style: preserve-3d;
+    transition: transform 0.8s ease;
+    cursor: pointer;
+  }
+
+  .program-card:hover .program-inner {
+    transform: rotateY(180deg);
+  }
+
+  .program-inner.flipped {
+    transform: rotateY(180deg);
+  }
+
+  /* FRONT */
+  .program-front {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backface-visibility: hidden;
+    box-shadow: 0 6px 18px var(--shadow);
+  }
+
+  .program-front::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.65);
+    border-radius: 14px;
+  }
+
+  .program-front h3 {
+    position: relative;
+    z-index: 1;
+    color: #fff;
+    font-size: 1.3rem;
+    text-align: center;
+    padding: 0 1rem;
+  }
+
+  /* BACK */
+  .program-back {
+    position: absolute;
+    inset: 0;
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.2rem 1.2rem 1rem;
+    backface-visibility: hidden;
+    transform: rotateY(180deg);
+    overflow-y: auto;
+    box-shadow: 0 6px 18px var(--shadow);
+  }
+
+  /* Fade-in animation */
+  .program-back h4,
+  .program-back ul {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.45s ease;
+  }
+
+  .program-card:hover .program-back h4,
+  .program-card:hover .program-back ul,
+  .program-inner.flipped .program-back h4,
+  .program-inner.flipped .program-back ul {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .program-back h4 {
+    color: var(--primary);
+    font-size: 0.95rem;
+    margin: 0.6rem 0 0.3rem;
+  }
+
+  .program-back ul {
+    padding-left: 1.1rem;
+    font-size: 0.85rem;
+    color: var(--text);
+  }
+
+  .program-back li {
+    margin-bottom: 0.25rem;
+  }
+
+  /* Mobile height fix */
+  @media (max-width: 600px) {
+    .program-inner {
+      height: 300px;
+    }
+  }
+
+  /* ===== Features & gallery ===== */
+
+  .feature-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 3rem 0;
+  }
+
+  .feature {
+    background: var(--card);
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 12px var(--shadow);
+    transition: transform 0.3s ease;
+    border-top: 4px solid var(--secondary);
+  }
+
+  .feature:hover {
+    transform: translateY(-5px);
+  }
+
+  .feature i {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+  }
+
+  .feature h3 {
+    margin-bottom: 0.75rem;
+    color: var(--primary);
+  }
+
+  .gallery-section {
+    padding: 3rem 0;
+  }
+
+  /* ===== Alumni Slider Wrapper ===== */
+  .alumni-section {
+    padding: 1rem 0;
+    background: var(--bg);
+  }
+
+  /* .alumni-section .alumni-header {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 2.5rem;
+  } */
+
+  .alumni-section h2 {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 0.4rem;
+  }
+
+  .alumni-section p {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .alumni-slider {
+    overflow: hidden;
+    width: 100%;
+    margin: auto;
+  }
+
+  /* ===== Each slide (contains 2 cards) ===== */
+  .alumni-slide {
+    display: flex;
+    gap: 24px;
+    width: 100%;
+  }
+
+  /* ===== Alumni Card ===== */
+  .alumni-card {
+    width: 50%;
+    /* FORCE 2 PER ROW */
+    box-sizing: border-box;
+    /* IMPORTANT */
+    display: flex;
+    gap: 16px;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    align-items: center;
+  }
+
+  /* ===== Alumni Image ===== */
+  .alumni-image img {
+    width: 140px;
+    /* bigger image */
+    height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+    /* prevents shrinking */
+  }
+
+  /* ===== Text ===== */
+  .alumni-card p {
+    margin: 0 0 8px;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .alumni-card strong {
+    font-size: 1.05rem;
+    color: #0f172a;
+  }
+
+  .alumni-card p {
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  /* ===== Alumni Dots ===== */
+  .alumni-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .alumni-dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+
+  .alumni-dots span.active {
+    background: #2563eb;
+    transform: scale(1.25);
+  }
+
+
+  /* ===== Mobile: 1 card per slide ===== */
+  @media (max-width: 768px) {
+    .alumni-slide {
+      flex-direction: column;
+    }
+
+    .alumni-card {
+      width: 100%;
+    }
+  }
+
+  /* Sticky Brochure Button */
+  .brochure-btn {
+    position: fixed;
+    right: -33px;
+    top: 80%;
+    transform: rotate(90deg) translateY(-50%);
+    background: var(--primary);
+    /* university blue */
+    color: #ffffff;
+    padding: 11px 7px;
+    text-align: center;
+    font-weight: 550;
+    font-size: 11px;
+    text-decoration: none;
+    border-radius: 10px;
+    box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    transition: all 0.25s ease;
+    line-height: 1.2;
+  }
+
+  /* Hover effect */
+  .brochure-btn:hover {
+    background: var(--secondary);
+    /* golden accent */
+    color: #111827;
+    padding-left: 18px;
+  }
+
+  /* Mobile adjustment */
+  @media (max-width: 768px) {
+    .brochure-btn {
+      font-size: 12px;
+      padding: 12px 8px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <h1>Department of Computer Science</h1>
+      <p>Innovation | Creativity | Collaboration</p>
+      <div class="hero-actions">
+        <a class="btn secondary" href="{{ url_for('about') }}">Learn More</a>
+        <a class="btn ghost" href="{{ url_for('events') }}">View Events</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <img src="/static/images/logo.jpeg" alt="Department Logo" />
+    </div>
+  </div>
+</section>
+
+<section class="announcements-wrapper">
+  <!-- horizontal bar -->
+  <div class="announcement-ticker">
+    <div class="container ticker-inner">
+      <div class="ticker-label">
+        <i class="fa-solid fa-bullhorn"></i>
+        <span>Announcements</span>
+      </div>
+      <div class="ticker-viewport">
+        <div class="ticker-track" id="tickerTrack">
+          <span class="ticker-item">Loading announcements...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- main notice card -->
+  <div class="container">
+    <div class="notification-board">
+      <div class="notification-header">
+        <i class="fa-solid fa-bell"></i>
+        <h2>Notification Board</h2>
+      </div>
+
+      <div class="notification-body">
+        <ul class="notification-list" id="notificationList">
+          <li><strong>Loading...</strong> Please wait</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHY CHOOSE OUR DEPARTMENT ===== -->
+<section class="why-choose">
+  <div class="container">
+    <div class="why-choose-header">
+      <h2>Why Choose Our Department?</h2>
+      <p>
+        We blend strong fundamentals with hands-on experience, preparing students for
+        cutting-edge careers in Computer Science, Data, and emerging technologies.
+      </p>
+    </div>
+
+    <div class="why-grid">
+      <article class="why-card">
+        <div class="why-icon">
+          <i class="fa-solid fa-code"></i>
+        </div>
+        <span class="why-tag">Academic Excellence</span>
+        <h3>Industry–aligned Curriculum</h3>
+        <p>
+          Regularly updated syllabus aligned with NEP and industry trends in AI, Data Science,
+          Cloud and Cybersecurity so students graduate with relevant, future-ready skills.
+        </p>
+      </article>
+
+      <article class="why-card">
+        <div class="why-icon">
+          <i class="fa-solid fa-microchip"></i>
+        </div>
+        <span class="why-tag">Hands-on Learning</span>
+        <h3>Modern Laboratories & Infrastructure</h3>
+        <p>
+          Dedicated computer labs, high-speed networking, and project spaces where students
+          implement real-world systems, not just complete assignments.
+        </p>
+      </article>
+
+      <article class="why-card">
+        <div class="why-icon">
+          <i class="fa-solid fa-lightbulb"></i>
+        </div>
+        <span class="why-tag">Innovation Culture</span>
+        <h3>Projects, Hackathons & CSA Activities</h3>
+        <p>
+          Active student association, internal hackathons, coding contests and mini-projects
+          encourage creativity, teamwork and problem-solving.
+        </p>
+      </article>
+
+      <article class="why-card">
+        <div class="why-icon">
+          <i class="fa-solid fa-chalkboard-user"></i>
+        </div>
+        <span class="why-tag">Mentoring</span>
+        <h3>Supportive Faculty & Guidance</h3>
+        <p>
+          Experienced and approachable faculty members mentor students personally in academics,
+          projects, research, and higher-study or placement planning.
+        </p>
+      </article>
+
+      <article class="why-card">
+        <div class="why-icon">
+          <i class="fa-solid fa-handshake-angle"></i>
+        </div>
+        <span class="why-tag">Career Readiness</span>
+        <h3>Training, Internships & Placements</h3>
+        <p>
+          Aptitude training, soft-skills sessions, alumni connects and internship support help
+          students build strong profiles for IT, product and research roles.
+        </p>
+      </article>
+
+      <article class="why-card">
+        <div class="why-icon">
+          <i class="fa-solid fa-globe"></i>
+        </div>
+        <span class="why-tag">Holistic Growth</span>
+        <h3>Clubs, Events & Community Outreach</h3>
+        <p>
+          Technical clubs, outreach programmes, workshops and cultural events foster leadership,
+          communication and social responsibility along with technical depth.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+<a href="{{ url_for('static', filename='brochure/cs_department_brochure.pdf') }}" class="brochure-btn" target="_blank">
+  📄 Download Brochure
+</a>
+
+<!-- ===== PROGRAMS & COURSES ===== -->
+<section class="programs-section">
+  <div class="container">
+    <div class="programs-header">
+      <h2>Programs & Courses</h2>
+      <p>
+        Outcome-based education designed to build strong fundamentals,
+        practical skills, and career readiness.
+      </p>
+    </div>
+
+    <div class="programs-grid">
+
+      <!-- B.Sc Computer Science -->
+      <div class="program-card">
+        <div class="program-inner">
+          <div class="program-front" style="background-image:url('/static/programs/bsc_cs.jpg')">
+            <h3>B.Sc Computer Science</h3>
+          </div>
+          <div class="program-back">
+            <h4>Program Outcomes (POs)</h4>
+            <ul>
+              <li>Apply core computing concepts</li>
+              <li>Analyze and solve problems</li>
+            </ul>
+
+            <h4>Program Specific Outcomes (PSOs)</h4>
+            <ul>
+              <li>Software & application development</li>
+              <li>Database and system design</li>
+            </ul>
+
+            <h4>Course Outcomes (COs)</h4>
+            <ul>
+              <li>Understand CS fundamentals</li>
+              <li>Build real-world applications</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- B.Sc Data Science -->
+      <div class="program-card">
+        <div class="program-inner">
+          <div class="program-front" style="background-image:url('/static/programs/bsc_ds.jpg')">
+            <h3>B.Sc Data Science</h3>
+          </div>
+          <div class="program-back">
+            <h4>POs</h4>
+            <ul>
+              <li>Data analysis & interpretation</li>
+              <li>Statistical reasoning</li>
+            </ul>
+
+            <h4>PSOs</h4>
+            <ul>
+              <li>Machine learning techniques</li>
+              <li>Big data handling</li>
+            </ul>
+
+            <h4>COs</h4>
+            <ul>
+              <li>Data visualization</li>
+              <li>Predictive modeling</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- B.Voc Computer Technology -->
+      <div class="program-card">
+        <div class="program-inner">
+          <div class="program-front" style="background-image:url('/static/programs/bvoc_ct.jpg')">
+            <h3>B.Voc Computer Technology</h3>
+          </div>
+          <div class="program-back">
+            <h4>POs</h4>
+            <ul>
+              <li>Industry-oriented IT skills</li>
+              <li>Hands-on technical training</li>
+            </ul>
+
+            <h4>PSOs</h4>
+            <ul>
+              <li>Hardware & networking</li>
+              <li>System maintenance</li>
+            </ul>
+
+            <h4>COs</h4>
+            <ul>
+              <li>Practical lab expertise</li>
+              <li>Troubleshooting skills</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- M.Sc Computer Science -->
+      <div class="program-card">
+        <div class="program-inner">
+          <div class="program-front" style="background-image:url('/static/programs/msc_cs.jpg')">
+            <h3>M.Sc Computer Science</h3>
+          </div>
+          <div class="program-back">
+            <h4>POs</h4>
+            <ul>
+              <li>Advanced computing knowledge</li>
+              <li>Research aptitude</li>
+            </ul>
+
+            <h4>PSOs</h4>
+            <ul>
+              <li>AI & advanced systems</li>
+              <li>Research & development</li>
+            </ul>
+
+            <h4>COs</h4>
+            <ul>
+              <li>System design expertise</li>
+              <li>Research projects & thesis</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES (moved below Why Choose) ===== -->
+<section class="container feature-strip">
+  <div class="feature">
+    <i class="fa-solid fa-book-open"></i>
+    <h3>Curriculum</h3>
+    <p>
+      Detailed syllabus structure for undergraduate and postgraduate programs,
+      aligned with NEP and outcome-based education.
+    </p>
+    <a href="{{ url_for('curriculum') }}" class="btn small ghost mt-2">
+      View Curriculum
+    </a>
+  </div>
+
+  <div class="feature">
+    <i class="fa-solid fa-flask"></i>
+    <h3>Research</h3>
+    <p>Projects in AI, Data Science, IoT, Networks, and more.</p>
+    <a href="{{ url_for('research') }}" class="btn small ghost mt-2">Explore Research</a>
+  </div>
+  <div class="feature">
+    <i class="fa-solid fa-photo-film"></i>
+    <h3>Gallery</h3>
+    <p>Events, Industrial Trips, and memorable moments.</p>
+    <a href="{{ url_for('gallery') }}" class="btn small ghost mt-2">View Gallery</a>
+  </div>
+</section>
+
+<section class="alumni-section">
+  <div class="container">
+
+    <div class="text-center mb-4">
+      <h2 class="section-title">Student Testimonials</h2>
+      <p class="section-subtitle">
+        Thoughts, takeaways, and testimonials from those who've lived it.
+      </p>
+    </div>
+
+    <div class="alumni-slider" id="alumniSlider"></div>
+    <div id="alumniDots" class="alumni-dots"></div>
+
+  </div>
+</section>
+
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+
+  function openAnnouncementUrl(url) {
+    if (!url) return;
+    window.open(url, "_blank");
+  }
+
+  // Load announcements for both ticker + board
+  fetch("/api/notifications")
+    .then((res) => res.json())
+    .then((items) => {
+      const tickerTrack = document.getElementById("tickerTrack");
+      const list = document.getElementById("notificationList");
+      const board = document.querySelector(".notification-body");
+
+      if (!items || items.length === 0) {
+        if (tickerTrack) {
+          tickerTrack.innerHTML =
+            '<span class="ticker-item">No announcements right now.</span>';
+        }
+        if (list) {
+          list.innerHTML = "<li>No notifications at this time.</li>";
+        }
+        return;
+      }
+
+      if (tickerTrack) tickerTrack.innerHTML = "";
+      if (list) list.innerHTML = "";
+
+      const tickerItems = items;
+      const boardItems = items;
+
+      /* TOP TICKER */
+      if (tickerTrack) {
+        if (tickerItems.length === 0) {
+          tickerTrack.innerHTML =
+            '<span class="ticker-item">No announcements right now.</span>';
+        } else {
+          tickerItems.forEach((n) => {
+            const span = document.createElement("span");
+            span.className = "ticker-item";
+            const label = n.category ? `[${n.category.toUpperCase()}] ` : "";
+            span.textContent =
+              label + (n.title || n.message || "Announcement");
+            if (n.url) {
+              span.style.cursor = "pointer";
+              span.addEventListener("click", () => openAnnouncementUrl(n.url));
+            }
+            tickerTrack.appendChild(span);
+          });
+
+          if (tickerItems.length > 1) {
+            tickerTrack.classList.add("scrolling");
+          }
+        }
+      }
+
+      /* BOTTOM BOARD (VERTICAL SCROLL) */
+      if (list && board) {
+        if (boardItems.length === 0) {
+          list.innerHTML = "<li>No notifications at this time.</li>";
+        } else {
+          boardItems.forEach((n) => {
+            const li = document.createElement("li");
+            const date = n.date ? n.date : "";
+            const category = n.category
+              ? n.category.toUpperCase()
+              : "GENERAL";
+
+            li.innerHTML = `
+              <span class="notification-title">${n.title || "Announcement"}</span>
+              <div class="notification-meta">[${category}]${date ? " • " + date : ""
+              }</div>
+              <div class="notification-text">${n.message || ""}</div>
+            `;
+
+            if (n.url) {
+              li.style.cursor = "pointer";
+              li.addEventListener("click", () => openAnnouncementUrl(n.url));
+            }
+
+            list.appendChild(li);
+          });
+
+          if (boardItems.length > 1) {
+            const clone = list.cloneNode(true);
+            while (clone.firstChild) {
+              list.appendChild(clone.firstChild);
+            }
+            list.classList.add("scrolling");
+          }
+        }
+      }
+    });
+
+  // Mobile tap flip support
+  document.querySelectorAll(".program-card").forEach(card => {
+    card.addEventListener("click", () => {
+      const inner = card.querySelector(".program-inner");
+      inner.classList.toggle("flipped");
+    });
+  });
+
+  // alumni testimonials slider
+  let alumniIndex = 0;
+  let slides = [];
+
+  fetch("/api/alumni")
+    .then(res => res.json())
+    .then(data => {
+
+      if (data.length === 1) data.push(data[0]);
+
+      for (let i = 0; i < data.length; i += 2) {
+        slides.push(data.slice(i, i + 2));
+      }
+
+      renderSlides();
+      setInterval(nextSlide, 10000);
+    });
+
+  function renderSlides() {
+    const slider = document.getElementById("alumniSlider");
+    const dots = document.getElementById("alumniDots");
+
+    slider.innerHTML = "";
+    dots.innerHTML = "";
+
+    slides.forEach((group, i) => {
+      const slide = document.createElement("div");
+      slide.className = "alumni-slide";
+      slide.style.display = i === 0 ? "flex" : "none";
+
+      group.forEach(a => {
+        slide.innerHTML += `
+        <div class="alumni-card">
+          <div class="alumni-image">
+            <img src="${a.photo}">
+          </div>
+          <div>
+            <p>${a.message}</p>
+            <strong>${a.name}</strong>
+          </div>
+        </div>
+      `;
+      });
+
+      slider.appendChild(slide);
+
+      const dot = document.createElement("span");
+      dot.onclick = () => showSlide(i);
+      if (i === 0) dot.classList.add("active");
+      dots.appendChild(dot);
+    });
+  }
+
+  function showSlide(i) {
+    document.querySelectorAll(".alumni-slide").forEach(s => s.style.display = "none");
+    document.querySelectorAll(".alumni-dots span").forEach(d => d.classList.remove("active"));
+
+    document.querySelectorAll(".alumni-slide")[i].style.display = "flex";
+    document.querySelectorAll(".alumni-dots span")[i].classList.add("active");
+
+    alumniIndex = i;
+  }
+
+  function nextSlide() {
+    alumniIndex = (alumniIndex + 1) % slides.length;
+    showSlide(alumniIndex);
+  }
+  const dots = document.getElementById("alumniDots");
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement("span");
+    if (i === 0) dot.classList.add("active");
+    dot.addEventListener("click", () => showSlide(i));
+    dots.appendChild(dot);
+  });
+
+</script>
+{% endblock %}

@@ -1,0 +1,734 @@
+{% extends 'base.html' %}
+
+{% block title %}Blog • Computer Science Department{% endblock %}
+
+{% block extra_css %}
+<style>
+    .blog-hero {
+        background: var(--primary);
+    }
+
+    .blog-section {
+        padding: 3rem 0;
+    }
+
+    .blog-form-card {
+        background: var(--card);
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px var(--shadow);
+        border-top: 4px solid var(--secondary);
+    }
+
+    .student-login-section {
+        background: var(--highlight);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+
+    .student-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .student-badge {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: var(--primary);
+        color: var(--text-light);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+    }
+
+    .login-form,
+    .signup-form {
+        display: none;
+    }
+
+    .login-form.active,
+    .signup-form.active {
+        display: block;
+    }
+
+    .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .blog-card {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px var(--shadow);
+        transition: transform 0.3s ease;
+        border-left: 4px solid var(--secondary);
+    }
+
+    .blog-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .blog-card h3 {
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .blog-card .date {
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+    }
+
+    .blog-card .author {
+        font-size: 0.9rem;
+        color: var(--secondary);
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .blog-card p {
+        color: var(--text);
+        line-height: 1.6;
+    }
+
+    .blog-card .file-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        color: var(--primary);
+        font-weight: 500;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    @media (max-width: 600px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .tab-buttons {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .tab-btn {
+        padding: 0.5rem 1rem;
+        border: 2px solid var(--primary);
+        background: transparent;
+        color: var(--primary);
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+        background: var(--primary);
+        color: var(--text-light);
+    }
+
+    .blog-card-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.75rem;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .like-btn {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.9rem;
+        color: var(--primary);
+        padding: 0;
+    }
+
+    .like-btn i {
+        font-size: 1.1rem;
+    }
+
+    .like-btn.liked i {
+        color: #e0245e;
+    }
+
+    .blog-image-thumb img {
+        width: 100%;
+        border-radius: 10px;
+        display: block;
+    }
+
+    .badge {
+        display: inline-block;
+        margin-left: 0.35rem;
+        padding: 0.1rem 0.5rem;
+        font-size: 0.7rem;
+        border-radius: 999px;
+        background: #e0f2fe;
+        color: #0369a1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero blog-hero">
+    <div class="container">
+        <h1>CSA Blog & Updates</h1>
+        <p>Stay updated with the latest events, articles, and student posts.</p>
+    </div>
+</section>
+
+<section class="blog-section container">
+    <div class="blog-form-card">
+        <h2>Add a New Post</h2>
+
+        <!-- Student & Faculty Login Section -->
+        <div class="student-login-section" id="authSection">
+            <div id="studentLoggedIn" style="display: none;">
+                <div class="student-info">
+                    <div class="student-badge">
+                        <i class="fa-solid fa-user-graduate"></i>
+                        <span id="studentName">User Name</span>
+                        <span>(<span id="studentIdDisplay"></span>)</span>
+                    </div>
+                    <button class="btn small danger" onclick="logoutUser()">Logout</button>
+                </div>
+            </div>
+
+            <div id="studentNotLoggedIn">
+                <!-- SIGNUP FIRST -->
+                <p class="mb-2"><strong>Create your account (Students & Faculty)</strong></p>
+
+                <!-- Signup Tabs -->
+                <div class="tab-buttons signup-tabs">
+                    <button type="button" class="tab-btn active" onclick="showStudentSignup()">Student Sign Up</button>
+                    <button type="button" class="tab-btn" onclick="showFacultySignup()">Faculty Sign Up</button>
+                </div>
+
+                <!-- Student Signup Form -->
+                <form id="studentSignupForm" class="signup-form" onsubmit="signupStudent(event)">
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Full Name</label>
+                            <input type="text" id="signupName" placeholder="Your full name" required>
+                        </div>
+                        <div class="form-field">
+                            <label>Student ID</label>
+                            <input type="text" id="signupStudentId" placeholder="Your Student ID" required>
+                        </div>
+                    </div>
+                    <!-- ✅ NEW: CLASS FIELD (REQUIRED) -->
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Class *</label>
+                            <select id="signupClass" required>
+                                <option value="">Select Class</option>
+
+                                <option value="B.Sc Computer Science FY">B.Sc Computer Science FY</option>
+                                <option value="B.Sc Computer Science SY">B.Sc Computer Science SY</option>
+                                <option value="B.Sc Computer Science TY">B.Sc Computer Science TY</option>
+
+                                <option value="B.Sc Data Science FY">B.Sc Data Science FY</option>
+
+                                <option value="B.Voc (Computer Technology) SY">B.Voc (Computer Technology) SY</option>
+                                <option value="B.Voc (Computer Technology) TY">B.Voc (Computer Technology) TY</option>
+
+                                <option value="M.Sc Computer Science FY">M.Sc Computer Science FY</option>
+                                <option value="M.Sc Computer Science SY">M.Sc Computer Science SY</option>
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Email</label>
+                            <input type="email" id="signupEmail" placeholder="your.email@example.com" required>
+                        </div>
+                        <div class="form-field">
+                            <label>Password</label>
+                            <input type="password" id="signupPassword" placeholder="Create a password" required
+                                minlength="6">
+                        </div>
+                    </div>
+
+
+                    <button type="submit" class="btn primary">Create Student Account</button>
+                </form>
+
+                <!-- Faculty Signup Form -->
+                <form id="facultySignupForm" class="signup-form" style="display:none;" onsubmit="signupFaculty(event)">
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Full Name</label>
+                            <input type="text" id="facSignupName" placeholder="Faculty name" required>
+                        </div>
+                        <div class="form-field">
+                            <label>Email</label>
+                            <input type="email" id="facSignupEmail" placeholder="faculty@example.com" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Designation</label>
+                            <input type="text" id="facSignupDesignation" placeholder="Assistant Professor">
+                        </div>
+                        <div class="form-field">
+                            <label>Password</label>
+                            <input type="password" id="facSignupPassword" placeholder="Create a password" required
+                                minlength="6">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn primary">Create Faculty Account</button>
+                </form>
+
+                <hr style="margin:1.5rem 0; border:none; border-top:1px solid var(--border);">
+
+                <!-- LOGIN AFTER SIGNUP -->
+                <p class="mb-2"><strong>Already have an account? Login</strong></p>
+
+                <div class="form-row" style="margin-bottom: 1rem;">
+                    <div class="form-field" style="max-width:220px;">
+                        <label>Login as</label>
+                        <select id="loginRole" onchange="switchRoleForm()">
+                            <option value="student">Student</option>
+                            <option value="faculty">Faculty</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Student Login (Email + Password) -->
+                <form id="studentLoginForm" class="login-form" onsubmit="loginStudent(event)">
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Student Email</label>
+                            <input type="email" id="loginStudentEmail" placeholder="your.email@example.com" required>
+                        </div>
+                        <div class="form-field">
+                            <label>Password</label>
+                            <input type="password" id="loginStudentPassword" placeholder="Enter password" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn primary">Student Login</button>
+                </form>
+
+                <!-- Faculty Login (Email + Password) -->
+                <form id="facultyLoginForm" class="login-form" style="display:none;" onsubmit="loginFaculty(event)">
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label>Faculty Email</label>
+                            <input type="email" id="loginFacultyEmail" placeholder="faculty@example.com" required>
+                        </div>
+                        <div class="form-field">
+                            <label>Password</label>
+                            <input type="password" id="loginFacultyPassword" placeholder="Enter password" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn primary">Faculty Login</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Blog Post Form (only shown when logged in) -->
+        <div class="blog-post-form-card" id="blogPostSection">
+            <h2>Add a New Post</h2>
+            <form id="blogForm" onsubmit="submitBlog(event)">
+                <div class="form-row">
+                    <div class="form-field">
+                        <label>Title *</label>
+                        <input type="text" id="blogTitle" placeholder="Enter a catchy title" required>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label>Content *</label>
+                    <textarea id="blogContent" rows="5" placeholder="Write your blog post content..."
+                        required></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label>Upload File (Image/PDF)</label>
+                        <input type="file" id="blogFile" accept="image/*,.pdf,.doc,.docx">
+                    </div>
+                    <div class="form-field">
+                        <label>Or File Link (URL)</label>
+                        <input type="url" id="blogFileLink" placeholder="https://example.com/file.pdf">
+                    </div>
+                </div>
+                <button type="submit" class="btn primary">
+                    <i class="fa-solid fa-paper-plane"></i> Submit Post
+                </button>
+                <p class="text-muted mt-1" style="font-size: 0.85rem;">
+                    * Posts will be visible after admin approval
+                </p>
+            </form>
+        </div>
+
+        <h2>All Blog Posts</h2>
+        <div id="blogPostsContainer" class="blog-grid">
+            {% if posts %}
+            {% for post in posts %}
+            <div class="blog-card">
+                <h3><a href="{{ url_for('blog_detail', blog_id=post.id) }}">{{ post.title }}</a></h3>
+                <p class="author">
+                    <i class="fa-solid fa-user"></i> {{ post.author_name or 'Anonymous' }}
+                    {% if post.author_type == 'faculty' %}<span class="badge">Faculty</span>{% endif %}
+                </p>
+                <p class="date">
+                    <i class="fa-solid fa-calendar"></i>
+                    {{ post.created_at.strftime('%d %b %Y, %I:%M %p') if post.created_at else 'Unknown date' }}
+                </p>
+                <p>{{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</p>
+
+                {% if post.file_url %}
+                {% if post.file_type == 'pdf' %}
+                <a href="{{ post.file_url }}" target="_blank" class="file-link">
+                    <i class="fa-solid fa-file-pdf"></i> View PDF
+                </a>
+                {% elif post.file_type == 'image' %}
+                <div class="blog-image-thumb" style="margin-top:0.75rem;">
+                    <img src="{{ post.file_url }}" alt="{{ post.title }}">
+                </div>
+                {% else %}
+                <a href="{{ post.file_url }}" target="_blank" class="file-link">
+                    <i class="fa-solid fa-link"></i> Open Attachment
+                </a>
+                {% endif %}
+                {% endif %}
+
+                <div class="blog-card-actions">
+                    <button type="button" class="like-btn" onclick="toggleLike('{{ post.id }}')">
+                        <i class="fa-solid fa-heart"></i>
+                        <span id="like-count-{{ post.id }}">{{ post.like_count }}</span>
+                    </button>
+                    <a href="{{ url_for('blog_detail', blog_id=post.id) }}" class="btn small">
+                        View Details & Comments
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p class="text-muted">No blog posts yet. Be the first to post!</p>
+            {% endif %}
+        </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let isLoggedIn = false;
+    let currentStudent = null;
+    let currentFaculty = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        checkSession();
+        switchRoleForm();
+        // default: show student signup form
+        showStudentSignup();
+    });
+
+    function checkSession() {
+        fetch('/api/student/check-session')
+            .then(res => res.json())
+            .then(data => {
+                if (data.logged_in) {
+                    isLoggedIn = true;
+                    currentStudent = data.student;
+                    currentFaculty = null;
+                    showLoggedInState();
+                } else {
+                    return fetch('/api/faculty/check-session')
+                        .then(res => res.json())
+                        .then(facData => {
+                            if (facData.logged_in) {
+                                isLoggedIn = true;
+                                currentFaculty = facData.faculty;
+                                currentStudent = null;
+                                showLoggedInState();
+                            } else {
+                                showLoggedOutState();
+                            }
+                        });
+                }
+            })
+            .catch(() => {
+                showLoggedOutState();
+            });
+    }
+
+    function showLoggedInState() {
+        const logged = document.getElementById('studentLoggedIn');
+        const notLogged = document.getElementById('studentNotLoggedIn');
+        const form = document.getElementById('blogForm');
+        if (logged) logged.style.display = 'block';
+        if (notLogged) notLogged.style.display = 'none';
+        if (form) form.style.display = 'block';
+
+        const nameSpan = document.getElementById('studentName');
+        const idSpan = document.getElementById('studentIdDisplay');
+        if (currentStudent) {
+            if (nameSpan) nameSpan.textContent = currentStudent.name;
+            if (idSpan) idSpan.textContent = currentStudent.class || currentStudent.student_id || '';
+        } else if (currentFaculty) {
+            if (nameSpan) nameSpan.textContent = currentFaculty.name;
+            if (idSpan) idSpan.textContent = 'Faculty';
+        }
+    }
+
+    function showLoggedOutState() {
+        const logged = document.getElementById('studentLoggedIn');
+        const notLogged = document.getElementById('studentNotLoggedIn');
+        const form = document.getElementById('blogForm');
+        if (logged) logged.style.display = 'none';
+        if (notLogged) notLogged.style.display = 'block';
+        if (form) form.style.display = 'none';
+        isLoggedIn = false;
+        currentStudent = null;
+        currentFaculty = null;
+    }
+
+    function switchRoleForm() {
+        const role = document.getElementById('loginRole').value;
+        const stuForm = document.getElementById('studentLoginForm');
+        const facForm = document.getElementById('facultyLoginForm');
+        if (role === 'student') {
+            if (stuForm) stuForm.style.display = 'block';
+            if (facForm) facForm.style.display = 'none';
+        } else {
+            if (stuForm) stuForm.style.display = 'none';
+            if (facForm) facForm.style.display = 'block';
+        }
+    }
+
+    function showStudentSignup() {
+        document.getElementById('studentSignupForm').style.display = 'block';
+        document.getElementById('facultySignupForm').style.display = 'none';
+        const tabs = document.querySelectorAll('.signup-tabs .tab-btn');
+        if (tabs[0]) tabs[0].classList.add('active');
+        if (tabs[1]) tabs[1].classList.remove('active');
+    }
+
+    function showFacultySignup() {
+        document.getElementById('studentSignupForm').style.display = 'none';
+        document.getElementById('facultySignupForm').style.display = 'block';
+        const tabs = document.querySelectorAll('.signup-tabs .tab-btn');
+        if (tabs[0]) tabs[0].classList.remove('active');
+        if (tabs[1]) tabs[1].classList.add('active');
+    }
+
+    // -------- Student auth (email + password) --------
+
+    function loginStudent(e) {
+        e.preventDefault();
+
+        const email = document.getElementById('loginStudentEmail').value.trim();
+        const password = document.getElementById('loginStudentPassword').value;
+
+        fetch('/api/student/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        })
+            .then(res => res.text())
+            .then(text => {
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    console.error('Student login: non-JSON response from server:', text);
+                    alert('Login error: server returned an unexpected response.');
+                    return;
+                }
+
+                if (!data.success) {
+                    alert(data.message || 'Login failed');
+                    return;
+                }
+
+                currentStudent = data.student || null;
+                currentFaculty = null;
+                isLoggedIn = true;
+
+                if (typeof showLoggedInState === 'function') {
+                    showLoggedInState();
+                }
+
+                window.location.reload();
+            })
+            .catch(err => {
+                console.error('Student login error:', err);
+                alert('Login error: ' + (err.message || 'Network error'));
+            });
+    }
+
+    function signupStudent(e) {
+        e.preventDefault();
+        const name = document.getElementById('signupName').value.trim();
+        const studentId = document.getElementById('signupStudentId').value.trim();
+        const email = document.getElementById('signupEmail').value.trim();
+        const password = document.getElementById('signupPassword').value;
+        const studentClass = document.getElementById('signupClass').value; // 👈 here
+
+        fetch('/api/student/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name,
+                student_id: studentId,
+                email,
+                password,
+                student_class: studentClass  // 👈 key must match app.py
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message + ' Please login now.');
+                    document.getElementById('loginRole').value = 'student';
+                    switchRoleForm();
+                    document.getElementById('loginStudentEmail').value = email;
+                } else {
+                    alert(data.message || 'Signup failed');
+                }
+            })
+            .catch(err => alert('Signup error: ' + err.message));
+    }
+
+
+    // -------- Faculty auth (email + password) --------
+
+    function loginFaculty(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginFacultyEmail').value.trim();
+        const password = document.getElementById('loginFacultyPassword').value;
+
+        fetch('/api/faculty/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    alert(data.message || 'Login failed');
+                    return;
+                }
+                currentFaculty = data.faculty;
+                currentStudent = null;
+                isLoggedIn = true;
+                showLoggedInState();
+                alert('Faculty login successful!');
+            })
+            .catch(err => alert('Login error: ' + err.message));
+    }
+
+    function signupFaculty(e) {
+        e.preventDefault();
+        const name = document.getElementById('facSignupName').value.trim();
+        const email = document.getElementById('facSignupEmail').value.trim();
+        const designation = document.getElementById('facSignupDesignation').value.trim();
+        const password = document.getElementById('facSignupPassword').value;
+
+        fetch('/api/faculty/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, designation, password })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    document.getElementById('loginRole').value = 'faculty';
+                    switchRoleForm();
+                    document.getElementById('loginFacultyEmail').value = email;
+                } else {
+                    alert(data.message || 'Signup failed');
+                }
+            })
+            .catch(err => alert('Signup error: ' + err.message));
+    }
+
+    function logoutUser() {
+        Promise.all([
+            fetch('/api/student/logout', { method: 'POST' }),
+            fetch('/api/faculty/logout', { method: 'POST' })
+        ]).finally(() => {
+            showLoggedOutState();
+            alert('Logged out successfully');
+        });
+    }
+
+    // ---------- Blog submit ----------
+
+    function submitBlog(e) {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('title', document.getElementById('blogTitle').value.trim());
+        formData.append('content', document.getElementById('blogContent').value.trim());
+        formData.append('file_link', document.getElementById('blogFileLink').value.trim());
+
+        const fileInput = document.getElementById('blogFile');
+        if (fileInput.files[0]) {
+            formData.append('file', fileInput.files[0]);
+        }
+
+        fetch('/api/blog/post', {
+            method: 'POST',
+            body: formData
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    document.getElementById('blogForm').reset();
+                    location.reload();
+                } else {
+                    alert(data.message || 'Failed to submit blog');
+                }
+            })
+            .catch(err => alert('Error: ' + err.message));
+    }
+
+    // ---------- Likes for list cards ----------
+
+    function toggleLike(blogId) {
+        fetch(`/api/blog/${blogId}/like`, {
+            method: 'POST'
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    alert(data.message || 'Unable to like this post.');
+                    return;
+                }
+                const countEl = document.getElementById(`like-count-${blogId}`);
+                if (countEl) countEl.textContent = data.like_count;
+            })
+            .catch(err => console.error(err));
+    }
+
+    // Media open helper
+    function openMedia(url, type) {
+        window.open(url, '_blank');
+    }
+</script>
+{% endblock %}

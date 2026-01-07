@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact • Computer Science Department{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Removed different hero color - now uses unified theme from base */
+    .contact-section {
+        padding: 3rem 0;
+    }
+    
+    .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+    
+    .contact-form {
+        background: var(--card);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px var(--shadow);
+        border-top: 4px solid var(--secondary);
+    }
+    
+    .contact-form h2 {
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+    }
+    
+    .contact-info {
+        background: var(--card);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px var(--shadow);
+        border-top: 4px solid var(--secondary);
+    }
+    
+    .contact-info h3 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+    
+    .contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .contact-item i {
+        font-size: 1.25rem;
+        color: var(--text-light);
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary);
+        border-radius: 8px;
+    }
+    
+    .contact-item div p {
+        margin: 0;
+    }
+    
+    .contact-item div strong {
+        display: block;
+        margin-bottom: 0.25rem;
+        color: var(--primary);
+    }
+    
+    .map-embed {
+        margin-top: 1.5rem;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 2px solid var(--border);
+    }
+    
+    .map-embed iframe {
+        border: none;
+        width: 100%;
+        height: 250px;
+    }
+    
+    @media (max-width: 768px) {
+        .contact-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .success-message {
+        background: #d1fae5;
+        color: #065f46;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: none;
+    }
+    
+    .success-message.show {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <h1>Contact Us</h1>
+        <p>Have a question? Reach out to the department office.</p>
+    </div>
+</section>
+
+<section class="contact-section container">
+    <div class="contact-grid">
+        <div class="contact-form">
+            <h2>Send us a Message</h2>
+            <div class="success-message" id="successMsg">
+                <i class="fa-solid fa-check-circle"></i> Your message has been sent successfully! We'll get back to you soon.
+            </div>
+            
+            <form id="contactForm" onsubmit="submitContact(event)">
+                <div class="form-field">
+                    <label>Your Name *</label>
+                    <input type="text" id="cName" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-field">
+                    <label>Email Address *</label>
+                    <input type="email" id="cEmail" placeholder="your.email@example.com" required>
+                </div>
+                <div class="form-field">
+                    <label>Subject *</label>
+                    <input type="text" id="cSubject" placeholder="What is this regarding?" required>
+                </div>
+                <div class="form-field">
+                    <label>Message *</label>
+                    <textarea id="cMessage" rows="6" placeholder="Write your message here..." required></textarea>
+                </div>
+                <button type="submit" class="btn primary" id="submitBtn">
+                    <i class="fa-solid fa-paper-plane"></i> Send Message
+                </button>
+            </form>
+        </div>
+        
+        <div class="contact-info">
+            <h3>Department Office</h3>
+            
+            <div class="contact-item">
+                <i class="fa-solid fa-location-dot"></i>
+                <div>
+                    <strong>Address</strong>
+                    <p>Department of Computer Science<br>Rajarshi Shahu College, Latur<br>Maharashtra, India</p>
+                </div>
+            </div>
+            
+            <div class="contact-item">
+                <i class="fa-solid fa-envelope"></i>
+                <div>
+                    <strong>Email</strong>
+                    <p>shaikhrajjak126@gmail.com<br>cs-dept@shahucollegelatur.org.in</p>
+                </div>
+            </div>
+            
+            <div class="contact-item">
+                <i class="fa-solid fa-phone"></i>
+                <div>
+                    <strong>Phone</strong>
+                    <p>+91-00000-00000</p>
+                </div>
+            </div>
+            
+            <div class="contact-item">
+                <i class="fa-solid fa-clock"></i>
+                <div>
+                    <strong>Office Hours</strong>
+                    <p>Monday - Saturday: 9:00 AM - 5:00 PM<br>Sunday: Closed</p>
+                </div>
+            </div>
+            
+            <div class="map-embed">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3812.086394853537!2d76.5802775!3d18.3979222!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcf8396336609e5%3A0xe06922ffa998a978!2sRajarshi%20Shahu%20College%2C%20Latur!5e0!3m2!1sen!2sin!4v1691847634593!5m2!1sen!2sin"
+                    allowfullscreen="" 
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function submitContact(e) {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+        
+        const data = {
+            name: document.getElementById('cName').value.trim(),
+            email: document.getElementById('cEmail').value.trim(),
+            subject: document.getElementById('cSubject').value.trim(),
+            message: document.getElementById('cMessage').value.trim()
+        };
+        
+        fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (result.success) {
+                document.getElementById('successMsg').classList.add('show');
+                document.getElementById('contactForm').reset();
+                setTimeout(() => {
+                    document.getElementById('successMsg').classList.remove('show');
+                }, 5000);
+            } else {
+                alert(result.message || 'Failed to send message. Please try again.');
+            }
+        })
+        .catch(err => {
+            alert('Error sending message: ' + err.message);
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Message';
+        });
+    }
+</script>
+{% endblock %}

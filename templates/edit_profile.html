@@ -1,0 +1,188 @@
+{% extends 'base.html' %} {% block title %}Edit Profile • Computer Science
+Department{% endblock %} {% block extra_css %}
+<style>
+  .profile-form-card {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--shadow);
+    padding: 1.75rem;
+    border-top: 4px solid var(--secondary);
+    max-width: 800px;
+    margin: 2rem auto;
+  }
+
+  .profile-edit-grid {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .profile-avatar-big {
+    width: 140px;
+    height: 140px;
+    border-radius: 999px;
+    background: var(--primary);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.6rem;
+    font-weight: 700;
+    overflow: hidden;
+  }
+
+  .profile-avatar-big img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .profile-avatar-help {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 0.5rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.5rem 0;
+  }
+
+  @media (max-width: 768px) {
+    .profile-edit-grid {
+      grid-template-columns: 1fr;
+      text-align: left;
+      justify-items: center;
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+<section class="page-hero">
+  <div class="container">
+    <h1>Edit Profile</h1>
+    <p>Update your basic account details, password and profile picture.</p>
+  </div>
+</section>
+
+<section class="container">
+  <div class="profile-form-card">
+    {# IMPORTANT: enctype for file upload #}
+    <form method="POST" enctype="multipart/form-data">
+      <div class="profile-edit-grid">
+        <!-- LEFT: Avatar -->
+        <div>
+          <div class="profile-avatar-big">
+            {% if user.avatar or user.profile_image %}
+            <img src="{{ user.avatar or user.profile_image }}" alt="Profile picture" />
+            {% else %} {{ (user.name or 'U')[0]|upper }} {% endif %}
+          </div>
+
+          <div class="form-field" style="margin-top: 1rem">
+            <label>Profile picture</label>
+            <input type="file" name="avatar" accept="image/*" />
+            <p class="profile-avatar-help">
+              Optional. JPG / PNG image, preferably under 2–3&nbsp;MB.
+            </p>
+          </div>
+        </div>
+
+        <!-- RIGHT: Main details -->
+        <div>
+          <div class="form-row">
+            <div class="form-field">
+              <label>Name</label>
+              <input type="text" name="name" value="{{ user.name }}" required />
+            </div>
+
+            <div class="form-field">
+              <label>Email</label>
+              <input type="text" value="{{ user.email }}" disabled />
+              <small class="text-muted">Email cannot be changed.</small>
+            </div>
+          </div>
+
+          {% if role == 'student' %}
+          <div class="form-row">
+            <div class="form-field">
+              <label>Student ID</label>
+              <input type="text" value="{{ user.student_id }}" disabled />
+            </div>
+            <div class="form-field">
+              <label>Phone (optional)</label>
+              <input type="text" name="phone" value="{{ user.phone or '' }}" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label>Class</label>
+              <input type="text" name="class" value="{{ user.class }}" disabled />
+            </div>
+          </div>
+          {% else %}
+
+          <div class="form-row">
+            <div class="form-field">
+              <label>Designation</label>
+              <input type="text" name="designation" value="{{ user.designation or user.role or '' }}" />
+            </div>
+            <div class="form-field">
+              <label>Phone (optional)</label>
+              <input type="text" name="phone" value="{{ user.phone or '' }}" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label>Specialization</label>
+              <input type="text" name="specialization" value="{{ user.specialization or '' }}" />
+            </div>
+            <div class="form-field">
+              <label>Experience</label>
+              <input type="text" name="experience" value="{{ user.experience or '' }}" />
+            </div>
+          </div>
+          {% endif %}
+
+          <div class="divider"></div>
+
+          <!-- PASSWORD CHANGE -->
+          <h3 style="margin-bottom: 0.5rem">Change Password</h3>
+          <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 1rem">
+            Leave these fields blank if you don’t want to change your password.
+          </p>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label>New password</label>
+              <input type="password" name="password" placeholder="Enter new password (optional)" />
+            </div>
+            <div class="form-field">
+              <label>Confirm new password</label>
+              <input type="password" name="password2" placeholder="Repeat new password" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="
+          margin-top: 1.75rem;
+          display: flex;
+          gap: 0.75rem;
+          flex-wrap: wrap;
+        ">
+        <button type="submit" class="btn primary">Save Changes</button>
+        <a href="{{ url_for('profile') }}" class="btn ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

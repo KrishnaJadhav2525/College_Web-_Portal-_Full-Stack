@@ -1,0 +1,69 @@
+{% extends 'admin/base.html' %} {% block title %}Manage Gallery{% endblock %} {%
+block page_title %}Gallery{% endblock %} {% block content %}
+<div class="mb-2">
+  <a href="{{ url_for('add_gallery_item') }}" class="btn btn-primary">
+    <i class="fa-solid fa-plus"></i> Add Image
+  </a>
+</div>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if gallery_items %} {% for item in gallery_items %}
+      <tr>
+        <td>
+          <img
+            src="{{ item.image or '/placeholder.svg?height=60&width=80' }}"
+            alt="{{ item.title }}"
+            style="
+              width: 80px;
+              height: 60px;
+              object-fit: cover;
+              border-radius: 8px;
+            "
+          />
+        </td>
+        <td>{{ item.title or 'Untitled' }}</td>
+        <td>
+          {% if item.category == 'home_gallery' %} Home – Gallery Section {%
+          elif item.category == 'department_gallery' %} Home – Department
+          Gallery {% elif item.category == 'infrastructure' %} Infrastructure
+          (About Us) {% elif item.category == 'events' %} Events Page Slider {%
+          elif item.category == 'industrial_tour' %} Industrial Tour {% elif
+          item.category == 'general' %} General / Other {% elif item.category ==
+          'achievements' %} Achievements / Awards {% else %} {{ item.category or
+          'Other' }} {% endif %}
+        </td>
+
+        <td>
+          <form
+            action="{{ url_for('delete_gallery_item', item_id=item._id) }}"
+            method="POST"
+            style="display: inline"
+            onsubmit="return confirm('Delete?')"
+          >
+            <button type="submit" class="btn btn-danger btn-sm">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %} {% else %}
+      <tr>
+        <td colspan="4" class="text-muted" style="text-align: center">
+          No gallery items
+        </td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
